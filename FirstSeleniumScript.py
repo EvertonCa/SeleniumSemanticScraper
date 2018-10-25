@@ -4,6 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 import os
+import platform
 
 
 def delayFechar(tempo):
@@ -18,7 +19,6 @@ def renomeador(links, palavra_chave):
         nome_do_arquivo = link[38:]
         os.rename("PDFs/" + nome_do_arquivo, "PDFs/" + palavra_chave + " " + str(i) + ".pdf")
         i += 1
-
 
 print("Entre com as palavras chave para a pesquisa:")
 palavras_chave = str(input())
@@ -48,8 +48,16 @@ for i in range(2, paginas+1):
 options = webdriver.ChromeOptions()
 
 diretorio_atual = os.getcwd()
+
+plataforma = platform.system()
+if plataforma == 'Darwin':
+    diretorio_chromedriver = diretorio_atual + '/ChromeDriver/ChromeDriverMac'
+elif plataforma == 'Windows':
+    diretorio_chromedriver = diretorio_atual + '/ChromeDriver/ChromeDriverWin.exe'
+else:
+    diretorio_chromedriver = diretorio_atual + '/ChromeDriver/ChromeDriverLin'
+
 diretorio_pdf = diretorio_atual + '/PDFs'
-diretorio_chromedriver = diretorio_atual + '/chromedriver'
 
 if os.path.exists(diretorio_pdf):
     pass
