@@ -20,6 +20,7 @@ def renomeador(links, palavra_chave):
         os.rename("PDFs/" + nome_do_arquivo, "PDFs/" + palavra_chave + " " + str(i) + ".pdf")
         i += 1
 
+
 print("Entre com as palavras chave para a pesquisa:")
 palavras_chave = str(input())
 
@@ -84,6 +85,7 @@ for url in lista_de_urls:
         for pdf in lista_de_pdfs:
             download_links.append(pdf.get_attribute('href'))
             pdf.click()
+
 delayFechar(3)
 renomeador(download_links, palavras_chave)
 driver.quit()
