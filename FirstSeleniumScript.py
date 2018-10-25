@@ -16,7 +16,7 @@ def renomeador(links, palavra_chave):
     i = 1
     for link in links:
         nome_do_arquivo = link[38:]
-        os.rename("pdfs/" + nome_do_arquivo, "pdfs/" + palavra_chave + " " + str(i) + ".pdf")
+        os.rename("PDFs/" + nome_do_arquivo, "PDFs/" + palavra_chave + " " + str(i) + ".pdf")
         i += 1
 
 
@@ -46,14 +46,24 @@ for i in range(2, paginas+1):
     lista_de_urls.append(temp)
 
 options = webdriver.ChromeOptions()
+
+diretorio_atual = os.getcwd()
+diretorio_pdf = diretorio_atual + '/PDFs'
+diretorio_chromedriver = diretorio_atual + '/chromedriver'
+
+if os.path.exists(diretorio_pdf):
+    pass
+else:
+    os.mkdir('PDFs')
+
 options.add_experimental_option("prefs", {
-  "download.default_directory": r"/Users/evertoncardoso/Developer/PycharmProjects/SeleniumSemantic/pdfs",
+  "download.default_directory": diretorio_pdf,
   "download.prompt_for_download": False,
   "download.directory_upgrade": True,
   "plugins.always_open_pdf_externally": True,
   "safebrowsing.enabled": True
 })
-driver = webdriver.Chrome('/Users/evertoncardoso/Developer/PycharmProjects/SeleniumSemantic/chromedriver', chrome_options=options)
+driver = webdriver.Chrome(diretorio_chromedriver, chrome_options=options)
 
 download_links = []
 
