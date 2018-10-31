@@ -6,14 +6,14 @@ import time
 import os
 import platform
 
-#sort por relevancia = https://www.semanticscholar.org/search?q=example&sort=relevance
-#sort por ano = https://www.semanticscholar.org/search?q=example&sort=year
-#sort de intervalo de ano https://www.semanticscholar.org/search?year%5B0%5D=1983&year%5B1%5D=2019&q=example&sort=relevance
-#sort by Journal Article = https://www.semanticscholar.org/search?publicationType%5B0%5D=JournalArticle&q=example&sort=relevance
-#sort by Review = https://www.semanticscholar.org/search?publicationType%5B0%5D=Reviews&q=example&sort=relevance
-#sort by Lit Reviews = https://www.semanticscholar.org/search?publicationType%5B0%5D=Reviews&q=machine%20learning&sort=relevance
-#sort by Review e Journal Article = https://www.semanticscholar.org/search?publicationType%5B0%5D=Reviews&publicationType%5B1%5D=JournalArticle&q=example&sort=relevance
-#possiveis sorts de Publication Type: Journal Article, Review, Conference, Study, Letters and Comments, Editorial, Case Report, Clinical Trial, Meta Analysis, News.
+# sort por relevancia = https://www.semanticscholar.org/search?q=example&sort=relevance
+# sort por ano = https://www.semanticscholar.org/search?q=example&sort=year
+# sort de intervalo de ano https://www.semanticscholar.org/search?year%5B0%5D=1983&year%5B1%5D=2019&q=example&sort=relevance
+# sort by Journal Article = https://www.semanticscholar.org/search?publicationType%5B0%5D=JournalArticle&q=example&sort=relevance
+# sort by Review = https://www.semanticscholar.org/search?publicationType%5B0%5D=Reviews&q=example&sort=relevance
+# sort by Lit Reviews = https://www.semanticscholar.org/search?publicationType%5B0%5D=Reviews&q=machine%20learning&sort=relevance
+# sort by Review e Journal Article = https://www.semanticscholar.org/search?publicationType%5B0%5D=Reviews&publicationType%5B1%5D=JournalArticle&q=example&sort=relevance
+# possiveis sorts de Publication Type: Journal Article, Review, Conference, Study, Letters and Comments, Editorial, Case Report, Clinical Trial, Meta Analysis, News.
 
 
 def delayFechar(tempo):
