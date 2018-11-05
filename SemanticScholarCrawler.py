@@ -15,6 +15,15 @@ import platform
 # sort by Review e Journal Article = https://www.semanticscholar.org/search?publicationType%5B0%5D=Reviews&publicationType%5B1%5D=JournalArticle&q=example&sort=relevance
 # possiveis sorts de Publication Type: Journal Article, Review, Conference, Study, Letters and Comments, Editorial, Case Report, Clinical Trial, Meta Analysis, News.
 
+# xpath para a div com todos os resultados //*[@id="main-content"]/div[1]/div
+# xpath para o primeiro resultado //*[@id="main-content"]/div[1]/div/article[1]
+# xpath para o titulo do primeiro resultado //*[@id="main-content"]/div[1]/div/article[1]/header/div
+# xpath para os autores do primeiro resultado //*[@id="main-content"]/div[1]/div/article[1]/header/ul/li[1]
+# xpath para o ano do primeiro resultado //*[@id="main-content"]/div[1]/div/article[1]/header/ul/li[3]
+# xpath para a origem do primeiro resultado //*[@id="main-content"]/div[1]/div/article[1]/header/ul/li[2]
+# xpath para nivel de citacoes //*[@id="main-content"]/div[1]/div/article[1]/footer/div[1]/li[1]
+# xpath para velocidade de citacoes //*[@id="main-content"]/div[1]/div/article[1]/footer/div[1]/li[2]
+
 
 def delayFechar(tempo):
     for ind in range(tempo, 0, -1):
