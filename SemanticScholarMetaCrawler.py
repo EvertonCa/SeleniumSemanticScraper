@@ -6,6 +6,7 @@ from selenium.webdriver.common.keys import Keys
 import time
 import os
 import platform
+import ExcelExporter
 
 
 def delayFechar(tempo):
@@ -185,3 +186,5 @@ for k in range(0, 3):
 gerenciador.saveArtigos(lista_artigos)
 gerenciador.saveAutores(lista_autores)
 driver.quit()
+os.chdir(diretorio_atual)
+excelExporter = ExcelExporter.ExcelExporter(pesquisa)

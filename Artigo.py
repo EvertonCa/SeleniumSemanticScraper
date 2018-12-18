@@ -1,4 +1,4 @@
-class Artigo():
+class Artigo:
     def __init__(self, titulo, autores, publicado, data, influencia, velocidade, link):
         self.titulo = titulo
         self.autores = autores

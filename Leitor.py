@@ -1,13 +1,5 @@
-import Gerenciador
+import ExcelExporter
 
-
-class Leitor():
-    def __init__(self, palavraChave):
-        gerenciador = Gerenciador.Gerenciador(palavraChave)
-        self.listaDeArtigos = gerenciador.loadArtigos()
-        self.listaDeAutores = gerenciador.loadAutores()
-
-
-leitor = Leitor('Deformable Models')
+leitor = ExcelExporter.ExcelExporter('Machine Learning')
 print('Pronto')
 

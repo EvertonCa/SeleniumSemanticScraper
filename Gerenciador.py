@@ -3,7 +3,7 @@ import pickle
 from pathlib import Path
 
 
-class Gerenciador():
+class Gerenciador:
     def __init__(self, palavraChave):
         self.diretorio_atual = os.getcwd()
         self.diretorio_files = self.diretorio_atual + '/Files/'
