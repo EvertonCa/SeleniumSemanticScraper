@@ -145,14 +145,14 @@ for item in listaDeArtigos:
     else:
         criei = False
         for i in lista_artigos:
-            if novoArtigo == i and novoArtigo.autores == i.autores:
+            if novoArtigo.titulo == i.titulo and novoArtigo.autores == i.autores:
                 artigoRepetido = True
                 break
             if novoArtigo.titulo[0] > i.titulo[0]:
                 lista_artigos.append(novoArtigo)
                 criei = True
                 break
-        if criei is False:
+        if criei is False and artigoRepetido is False:
             lista_artigos.append(novoArtigo)
 
     if artigoRepetido is False:

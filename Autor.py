@@ -28,7 +28,7 @@ class Autor():
             return NotImplemented
 
     def __eq__(self, other):
-        return self.nome.lower() == other.lower()
+        return self.nome == other
 
     def __ne__(self, other):
         return self.nome != other
