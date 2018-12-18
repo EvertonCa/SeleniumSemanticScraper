@@ -7,15 +7,6 @@ import time
 import os
 import platform
 
-# sort por relevancia = https://www.semanticscholar.org/search?q=example&sort=relevance
-# sort por ano = https://www.semanticscholar.org/search?q=example&sort=year
-# sort de intervalo de ano https://www.semanticscholar.org/search?year%5B0%5D=1983&year%5B1%5D=2019&q=example&sort=relevance
-# sort by Journal Article = https://www.semanticscholar.org/search?publicationType%5B0%5D=JournalArticle&q=example&sort=relevance
-# sort by Review = https://www.semanticscholar.org/search?publicationType%5B0%5D=Reviews&q=example&sort=relevance
-# sort by Lit Reviews = https://www.semanticscholar.org/search?publicationType%5B0%5D=Reviews&q=machine%20learning&sort=relevance
-# sort by Review e Journal Article = https://www.semanticscholar.org/search?publicationType%5B0%5D=Reviews&publicationType%5B1%5D=JournalArticle&q=example&sort=relevance
-# possiveis sorts de Publication Type: Journal Article, Review, Conference, Study, Letters and Comments, Editorial, Case Report, Clinical Trial, Meta Analysis, News.
-
 
 def delayFechar(tempo):
     for ind in range(tempo, 0, -1):
@@ -58,120 +49,139 @@ options.add_experimental_option("prefs", {
   "plugins.always_open_pdf_externally": True,
   "safebrowsing.enabled": True
 })
-driver = webdriver.Chrome(diretorio_chromedriver, chrome_options=options)
 
 pesquisa = str(input("Entre com sua pesquisa:\n"))
 paginas = int(input("Quantas paginas gostaria de pesquisar?\n"))
 
-driver.set_page_load_timeout('10')
-driver.get('https://www.semanticscholar.org/')
-driver.find_element_by_name('q').send_keys(pesquisa)
-driver.find_element_by_name('q').send_keys(Keys.ENTER)
-
-delay(1)
-
 gerenciador = Gerenciador.Gerenciador(pesquisa)
 lista_autores = gerenciador.loadAutores()
 lista_artigos = gerenciador.loadArtigos()
+normal = False
+lastFiveYears = False
+litReviews = False
 
-for i in range(0, paginas):
-    listaDeArtigos = driver.find_elements_by_xpath("//article[@class='search-result']")
+driver = webdriver.Chrome(diretorio_chromedriver, chrome_options=options)
+for k in range(0, 3):
+    driver.set_page_load_timeout('10')
+    driver.get('https://www.semanticscholar.org/')
+    driver.find_element_by_name('q').send_keys(pesquisa)
+    driver.find_element_by_name('q').send_keys(Keys.ENTER)
+    delay(3)
 
-    for item in listaDeArtigos:
-        titulo = item.find_element_by_xpath(".//a[@data-selenium-selector='title-link']").text
-
-        listaDeAutoresHTML = item.find_elements_by_xpath(".//a[@class='author-list__link author-list__author-name']")
-        lista_autores_artigo = []
-        for temp in listaDeAutoresHTML:
-            autor = temp.text
-            link = temp.get_attribute('href')
-            if len(lista_autores) == 0:
-                temp = Autor.Autor(autor, link)
-                lista_autores_artigo.append(temp)
-                lista_autores.append(temp)
+    if normal is False:
+        normal = True
+    else:
+        if lastFiveYears is False:
+            element = driver.find_element_by_xpath("//button[@data-selenium-selector='last-five-years-filter-button']")
+            driver.execute_script('arguments[0].click()', element)
+            lastFiveYears = True
+        else:
+            if litReviews is False:
+                element = driver.find_element_by_xpath("//button[@data-selenium-selector='reviews-filter-button']")
+                driver.execute_script('arguments[0].click()', element)
+                litReviews = True
             else:
-                criei = False
-                for i in lista_autores:
-                    if autor == i.nome:
-                        lista_autores_artigo.append(i)
-                        lista_autores_artigo.sort()
-                        criei = True
-                        break
-                    if autor[0] < i.nome[0]:
+                pass
+
+    delay(3)
+
+    for i in range(0, paginas):
+        listaDeArtigos = driver.find_elements_by_xpath("//article[@class='search-result']")
+
+        for item in listaDeArtigos:
+            titulo = item.find_element_by_xpath(".//a[@data-selenium-selector='title-link']").text
+
+            listaDeAutoresHTML = item.find_elements_by_xpath(
+                ".//a[@class='author-list__link author-list__author-name']")
+            lista_autores_artigo = []
+            for temp in listaDeAutoresHTML:
+                autor = temp.text
+                link = temp.get_attribute('href')
+                if len(lista_autores) == 0:
+                    temp = Autor.Autor(autor, link)
+                    lista_autores_artigo.append(temp)
+                    lista_autores.append(temp)
+                else:
+                    criei = False
+                    for i in lista_autores:
+                        if autor == i.nome:
+                            lista_autores_artigo.append(i)
+                            lista_autores_artigo.sort()
+                            criei = True
+                            break
+                        if autor[0] < i.nome[0]:
+                            temp = Autor.Autor(autor, link)
+                            lista_autores_artigo.append(temp)
+                            lista_autores_artigo.sort()
+                            lista_autores.append(temp)
+                            lista_autores.sort()
+                            criei = True
+                            break
+                    if criei is False:
                         temp = Autor.Autor(autor, link)
                         lista_autores_artigo.append(temp)
                         lista_autores_artigo.sort()
                         lista_autores.append(temp)
                         lista_autores.sort()
+
+            origem = None
+            try:
+                origem = item.find_element_by_xpath(".//li[@data-selenium-selector='venue-metadata']").text
+            except:
+                print('Artigo ' + titulo + " não possui dados de origem.")
+
+            data = None
+            try:
+                data = item.find_element_by_xpath(".//li[@data-selenium-selector='paper-year']").text
+            except:
+                print('Artigo ' + titulo + " não possui dados de data de publicação.")
+
+            influencia = None
+            try:
+                influencia = item.find_element_by_xpath(
+                    ".//li[@data-selenium-selector='search-result-influential-citations']").text
+            except:
+                print('Artigo ' + titulo + " não possui dados de influencia.")
+
+            velocidade = None
+            try:
+                velocidade = item.find_element_by_xpath(
+                    ".//li[@data-selenium-selector='search-result-citation-velocity']").text
+            except:
+                print('Artigo ' + titulo + " não possui dados de velocidade de citação.")
+
+            link = None
+            try:
+                link = item.find_element_by_xpath(".//a[@data-selenium-selector='paper-link']").get_attribute('href')
+            except:
+                print('Artigo ' + titulo + " não possui link.")
+
+            novoArtigo = Artigo.Artigo(titulo, lista_autores_artigo, origem, data, influencia, velocidade, link)
+
+            artigoRepetido = False
+            if len(lista_artigos) == 0:
+                lista_artigos.append(novoArtigo)
+            else:
+                criei = False
+                for i in lista_artigos:
+                    if novoArtigo.titulo == i.titulo and novoArtigo.autores == i.autores:
+                        artigoRepetido = True
+                        break
+                    if novoArtigo.titulo[0] < i.titulo[0]:
+                        lista_artigos.append(novoArtigo)
                         criei = True
                         break
-                if criei is False:
-                    temp = Autor.Autor(autor, link)
-                    lista_autores_artigo.append(temp)
-                    lista_autores_artigo.sort()
-                    lista_autores.append(temp)
-                    lista_autores.sort()
-
-        origem = None
-        try:
-            origem = item.find_element_by_xpath(".//li[@data-selenium-selector='venue-metadata']").text
-        except:
-            print('Artigo ' + titulo + " não possui dados de origem.")
-
-        data = None
-        try:
-            data = item.find_element_by_xpath(".//li[@data-selenium-selector='paper-year']").text
-        except:
-            print('Artigo ' + titulo + " não possui dados de data de publicação.")
-
-        influencia = None
-        try:
-            influencia = item.find_element_by_xpath(
-                ".//li[@data-selenium-selector='search-result-influential-citations']").text
-        except:
-            print('Artigo ' + titulo + " não possui dados de influencia.")
-
-        velocidade = None
-        try:
-            velocidade = item.find_element_by_xpath(
-                ".//li[@data-selenium-selector='search-result-citation-velocity']").text
-        except:
-            print('Artigo ' + titulo + " não possui dados de velocidade de citação.")
-
-        link = None
-        try:
-            link = item.find_element_by_xpath(".//a[@data-selenium-selector='paper-link']").get_attribute('href')
-        except:
-            print('Artigo ' + titulo + " não possui link.")
-
-        novoArtigo = Artigo.Artigo(titulo, lista_autores_artigo, origem, data, influencia, velocidade, link)
-
-        artigoRepetido = False
-        if len(lista_artigos) == 0:
-            lista_artigos.append(novoArtigo)
-        else:
-            criei = False
-            for i in lista_artigos:
-                if novoArtigo.titulo == i.titulo and novoArtigo.autores == i.autores:
-                    artigoRepetido = True
-                    break
-                if novoArtigo.titulo[0] < i.titulo[0]:
+                if criei is False and artigoRepetido is False:
                     lista_artigos.append(novoArtigo)
-                    criei = True
-                    break
-            if criei is False and artigoRepetido is False:
-                lista_artigos.append(novoArtigo)
 
-        if artigoRepetido is False:
-            for autorTemp in lista_autores_artigo:
-                autorTemp.addArtigo(novoArtigo)
+            if artigoRepetido is False:
+                for autorTemp in lista_autores_artigo:
+                    autorTemp.addArtigo(novoArtigo)
 
-    element = driver.find_element_by_xpath("//a[@data-selenium-selector='next-page']")
-    driver.execute_script('arguments[0].click()', element)
-    delay(1)
+        element = driver.find_element_by_xpath("//a[@data-selenium-selector='next-page']")
+        driver.execute_script('arguments[0].click()', element)
+        delay(3)
 
 gerenciador.saveArtigos(lista_artigos)
 gerenciador.saveAutores(lista_autores)
-
-delayFechar(3)
 driver.quit()

@@ -8,6 +8,6 @@ class Leitor():
         self.listaDeAutores = gerenciador.loadAutores()
 
 
-leitor = Leitor('Machine Learning')
+leitor = Leitor('Deformable Models')
 print('Pronto')
 
