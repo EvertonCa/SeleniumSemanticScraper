@@ -1,5 +1,5 @@
 import ExcelExporter
 
-leitor = ExcelExporter.ExcelExporter('Machine Learning')
+leitor = ExcelExporter.ExcelExporter('fakenews')
 print('Pronto')
 

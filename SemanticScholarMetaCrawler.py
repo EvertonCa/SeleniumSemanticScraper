@@ -179,8 +179,12 @@ for k in range(0, 3):
                 for autorTemp in lista_autores_artigo:
                     autorTemp.addArtigo(novoArtigo)
 
-        element = driver.find_element_by_xpath("//a[@data-selenium-selector='next-page']")
-        driver.execute_script('arguments[0].click()', element)
+        try:
+            element = driver.find_element_by_xpath("//a[@data-selenium-selector='next-page']")
+            driver.execute_script('arguments[0].click()', element)
+        except:
+            print("ASSUNTO NÃO POSSUI MAIS PAGINAS DE PESQUISA!")
+            break
         delay(3)
 
 gerenciador.saveArtigos(lista_artigos)

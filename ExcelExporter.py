@@ -100,8 +100,12 @@ class ExcelExporter:
             worksheet_autores.write(linha, nome_autor, autor.nome, one_line_format)
             worksheet_autores.write(linha, link_autor, autor.link, one_line_format)
             for artigos in autor.artigos:
-                worksheet_autores.write_url(linha, artigos_autor, artigos.link, autor_format, string=artigos.titulo)
-                linha += 1
+                try:
+                    worksheet_autores.write_url(linha, artigos_autor, artigos.link, autor_format, string=artigos.titulo)
+                except:
+                    worksheet_autores.write(linha, artigos_autor, artigos.titulo, one_line_format)
+                finally:
+                    linha += 1
             if primeiraLinha != linha - 1:
                 worksheet_autores.merge_range(primeiraLinha, nome_autor, linha - 1, nome_autor, autor.nome,
                                               merge_format)
