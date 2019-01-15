@@ -7,6 +7,9 @@ import time
 import os
 import platform
 import ExcelExporter
+import sys
+
+sys.setrecursionlimit(5000)
 
 
 def delayFechar(tempo):
@@ -94,6 +97,13 @@ for k in range(0, 3):
 
             listaDeAutoresHTML = item.find_elements_by_xpath(
                 ".//a[@class='author-list__link author-list__author-name']")
+
+            autoresSemLink = None
+            try:
+                autoresSemLink = item.find_elements_by_xpath(".//span[@class='author-list__author-name']")
+            except:
+                pass
+
             lista_autores_artigo = []
             for temp in listaDeAutoresHTML:
                 autor = temp.text
@@ -125,33 +135,63 @@ for k in range(0, 3):
                         lista_autores.append(temp)
                         lista_autores.sort()
 
-            origem = None
+            if autoresSemLink is not None:
+                for temp in autoresSemLink:
+                    autor = temp.text
+                    if len(lista_autores) == 0:
+                        temp = Autor.Autor(autor, None)
+                        lista_autores_artigo.append(temp)
+                        lista_autores.append(temp)
+                    else:
+                        criei = False
+                        for i in lista_autores:
+                            if autor == i.nome:
+                                lista_autores_artigo.append(i)
+                                lista_autores_artigo.sort()
+                                criei = True
+                                break
+                            if autor[0] < i.nome[0]:
+                                temp = Autor.Autor(autor, None)
+                                lista_autores_artigo.append(temp)
+                                lista_autores_artigo.sort()
+                                lista_autores.append(temp)
+                                lista_autores.sort()
+                                criei = True
+                                break
+                        if criei is False:
+                            temp = Autor.Autor(autor, None)
+                            lista_autores_artigo.append(temp)
+                            lista_autores_artigo.sort()
+                            lista_autores.append(temp)
+                            lista_autores.sort()
+
+            origem = '-'
             try:
                 origem = item.find_element_by_xpath(".//li[@data-selenium-selector='venue-metadata']").text
             except:
                 print('Artigo ' + titulo + " não possui dados de origem.")
 
-            data = None
+            data = '-'
             try:
                 data = item.find_element_by_xpath(".//li[@data-selenium-selector='paper-year']").text
             except:
                 print('Artigo ' + titulo + " não possui dados de data de publicação.")
 
-            influencia = None
+            influencia = '0'
             try:
                 influencia = item.find_element_by_xpath(
                     ".//li[@data-selenium-selector='search-result-influential-citations']").text
             except:
                 print('Artigo ' + titulo + " não possui dados de influencia.")
 
-            velocidade = None
+            velocidade = '0'
             try:
                 velocidade = item.find_element_by_xpath(
                     ".//li[@data-selenium-selector='search-result-citation-velocity']").text
             except:
                 print('Artigo ' + titulo + " não possui dados de velocidade de citação.")
 
-            link = None
+            link = '-'
             try:
                 link = item.find_element_by_xpath(".//a[@data-selenium-selector='paper-link']").get_attribute('href')
             except:
@@ -165,15 +205,17 @@ for k in range(0, 3):
             else:
                 criei = False
                 for i in lista_artigos:
-                    if novoArtigo.titulo == i.titulo and novoArtigo.autores == i.autores:
+                    if novoArtigo.link == i.link and novoArtigo.titulo == i.titulo:
                         artigoRepetido = True
                         break
                     if novoArtigo.titulo[0] < i.titulo[0]:
                         lista_artigos.append(novoArtigo)
+                        lista_artigos.sort()
                         criei = True
                         break
                 if criei is False and artigoRepetido is False:
                     lista_artigos.append(novoArtigo)
+                    lista_artigos.sort()
 
             if artigoRepetido is False:
                 for autorTemp in lista_autores_artigo:

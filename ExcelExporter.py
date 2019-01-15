@@ -72,7 +72,10 @@ class ExcelExporter:
             worksheet_artigos.write(linha, velocidade, artigo.velocidade, one_line_format)
             worksheet_artigos.write(linha, link, artigo.link, one_line_format)
             for autor in artigo.autores:
-                worksheet_artigos.write_url(linha, autores, autor.link, autor_format, string=autor.nome)
+                if autor.link is not None:
+                    worksheet_artigos.write_url(linha, autores, autor.link, autor_format, string=autor.nome)
+                else:
+                    worksheet_artigos.write_url(linha, autores, '', autor_format, string=autor.nome)
                 linha += 1
             if primeiraLinha != linha - 1:
                 worksheet_artigos.merge_range(primeiraLinha, titulo, linha - 1, titulo, artigo.titulo, merge_format)
@@ -91,7 +94,7 @@ class ExcelExporter:
         linha = 0
 
         worksheet_autores.write(linha, nome_autor, 'Nome do Autor', primeiraLinha_format)
-        worksheet_autores.write(linha, link_autor, 'Pagina do Autorr', primeiraLinha_format)
+        worksheet_autores.write(linha, link_autor, 'Pagina do Autor', primeiraLinha_format)
         worksheet_autores.write(linha, artigos_autor, 'Artigos publicados relacionados', primeiraLinha_format)
         linha += 1
 
