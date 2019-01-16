@@ -17,13 +17,14 @@ class ExcelExporter:
         worksheet_artigos = workbook.add_worksheet('ARTIGOS')
         worksheet_autores = workbook.add_worksheet('AUTORES')
 
-        titulo = 0
-        autores = 1
-        publicado = 2
-        data = 3
-        influencia = 4
-        velocidade = 5
-        link = 6
+        indice = 0
+        titulo = 1
+        autores = 2
+        publicado = 3
+        data = 4
+        influencia = 5
+        velocidade = 6
+        link = 7
         linha = 0
 
         primeiraLinha_format = workbook.add_format({'bold': True,
@@ -50,6 +51,7 @@ class ExcelExporter:
             'border': 1
         })
 
+        worksheet_artigos.write(linha, indice, 'Indice do Artigo', primeiraLinha_format)
         worksheet_artigos.write(linha, titulo, 'Título do Artigo', primeiraLinha_format)
         worksheet_artigos.write(linha, autores, 'Autores', primeiraLinha_format)
         worksheet_artigos.write(linha, publicado, 'Origem da Publicação', primeiraLinha_format)
@@ -63,8 +65,11 @@ class ExcelExporter:
         listaDeArtigos = gerenciador.loadArtigos()
         listaDeAutores = gerenciador.loadAutores()
 
+        numeroDoArtigo = 1
+
         for artigo in listaDeArtigos:
             primeiraLinha = linha
+            worksheet_artigos.write(linha, indice, str(numeroDoArtigo), one_line_format)
             worksheet_artigos.write(linha, titulo, artigo.titulo, one_line_format)
             worksheet_artigos.write(linha, publicado, artigo.publicado_em, one_line_format)
             worksheet_artigos.write(linha, data, artigo.data, one_line_format)
@@ -78,6 +83,7 @@ class ExcelExporter:
                     worksheet_artigos.write_url(linha, autores, '', autor_format, string=autor.nome)
                 linha += 1
             if primeiraLinha != linha - 1:
+                worksheet_artigos.merge_range(primeiraLinha, indice, linha - 1, indice, str(numeroDoArtigo), merge_format)
                 worksheet_artigos.merge_range(primeiraLinha, titulo, linha - 1, titulo, artigo.titulo, merge_format)
                 worksheet_artigos.merge_range(primeiraLinha, publicado, linha - 1, publicado, artigo.publicado_em,
                                               merge_format)
@@ -87,6 +93,7 @@ class ExcelExporter:
                 worksheet_artigos.merge_range(primeiraLinha, velocidade, linha - 1, velocidade, artigo.velocidade,
                                               merge_format)
                 worksheet_artigos.merge_range(primeiraLinha, link, linha - 1, link, artigo.link, merge_format)
+            numeroDoArtigo += 1
 
         nome_autor = 0
         link_autor = 1
