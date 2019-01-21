@@ -7,23 +7,12 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
-import time
 import os
 import platform
 import ExcelExporter
 import sys
 
 sys.setrecursionlimit(5000)
-
-
-def delayFechar(tempo):
-    for ind in range(tempo, 0, -1):
-        print("Browser fechando em " + str(ind) + " segundos")
-        time.sleep(1)
-
-
-def delay(tempo):
-    time.sleep(tempo)
 
 
 def retornaListaAutores(autores):
