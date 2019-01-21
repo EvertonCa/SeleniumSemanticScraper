@@ -55,7 +55,7 @@ options.add_argument('--no-sandbox')
 options.add_argument('--disable-gpu')
 
 pesquisa = str(input("Entre com sua pesquisa:\n"))
-paginas = int(input("Quantas paginas gostaria de pesquisar?\n"))
+paginas = int(input("Quantas páginas gostaria de pesquisar? Cada página retorna por volta de 30 resultados.\n"))
 
 gerenciador = Gerenciador.Gerenciador(pesquisa)
 lista_autores = gerenciador.loadAutores()
@@ -98,7 +98,7 @@ for k in range(0, 3):
             else:
                 pass
 
-    for i in range(0, paginas):
+    for pag in range(0, paginas):
         while True:
             try:
                 element = driver.find_element_by_xpath("//div[@class='result-page is-filtering']")
@@ -236,6 +236,8 @@ for k in range(0, 3):
                 for autorTemp in lista_autores_artigo:
                     autorTemp.addArtigo(novoArtigo)
 
+        print('~~~~ PÁGINA ' + str(pag+1) + ' FINALIZADA COM SUCESSO ~~~~')
+
         try:
             element = driver.find_element_by_xpath("//a[@data-selenium-selector='next-page']")
             driver.execute_script('arguments[0].click()', element)
@@ -243,8 +245,10 @@ for k in range(0, 3):
             print("ASSUNTO NÃO POSSUI MAIS PAGINAS DE PESQUISA!")
             break
 
+print('~~~~ PESQUISA FINALIZADA COM SUCESSO ~~~~')
 gerenciador.saveArtigos(lista_artigos)
 gerenciador.saveAutores(lista_autores)
 driver.quit()
 os.chdir(diretorio_atual)
 excelExporter = ExcelExporter.ExcelExporter(pesquisa)
+print('~~~~ EXCEL SALVO COM SUCESSO ~~~~')
