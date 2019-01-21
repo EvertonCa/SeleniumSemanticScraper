@@ -3,6 +3,9 @@ import Gerenciador
 import Autor
 import Artigo
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
 import os
 import platform
@@ -66,11 +69,22 @@ litReviews = False
 
 driver = webdriver.Chrome(diretorio_chromedriver, chrome_options=options)
 for k in range(0, 3):
-    driver.set_page_load_timeout('10')
     driver.get('https://www.semanticscholar.org/')
+
+    try:
+        waitelement = WebDriverWait(driver, 20).\
+            until(EC.presence_of_element_located((By.XPATH, "//select[@aria-label='Field of study filter']")))
+    except TimeoutError:
+        print("PAGINA NÃO CARREGOU!")
+
     driver.find_element_by_name('q').send_keys(pesquisa)
     driver.find_element_by_name('q').send_keys(Keys.ENTER)
-    delay(3)
+
+    try:
+        waitelement = WebDriverWait(driver, 20).\
+            until(EC.presence_of_element_located((By.XPATH, "//button[@data-selenium-selector='more-search-filters']")))
+    except TimeoutError:
+        print("PAGINA NÃO CARREGOU!")
 
     if normal is False:
         normal = True
@@ -87,9 +101,13 @@ for k in range(0, 3):
             else:
                 pass
 
-    delay(3)
-
     for i in range(0, paginas):
+        while True:
+            try:
+                element = driver.find_element_by_xpath("//div[@class='result-page is-filtering']")
+            except:
+                break
+
         listaDeArtigos = driver.find_elements_by_xpath("//article[@class='search-result']")
 
         for item in listaDeArtigos:
@@ -227,7 +245,6 @@ for k in range(0, 3):
         except:
             print("ASSUNTO NÃO POSSUI MAIS PAGINAS DE PESQUISA!")
             break
-        delay(3)
 
 gerenciador.saveArtigos(lista_artigos)
 gerenciador.saveAutores(lista_autores)
