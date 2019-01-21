@@ -61,7 +61,7 @@ for k in range(0, 3):
         waitelement = WebDriverWait(driver, 20).\
             until(EC.presence_of_element_located((By.XPATH, "//select[@aria-label='Field of study filter']")))
     except TimeoutError:
-        print("PAGINA NÃO CARREGOU!")
+        print("~~~~ PAGINA NÃO CARREGOU! ~~~~")
 
     driver.find_element_by_name('q').send_keys(pesquisa)
     driver.find_element_by_name('q').send_keys(Keys.ENTER)
@@ -70,7 +70,7 @@ for k in range(0, 3):
         waitelement = WebDriverWait(driver, 20).\
             until(EC.presence_of_element_located((By.XPATH, "//button[@data-selenium-selector='more-search-filters']")))
     except TimeoutError:
-        print("PAGINA NÃO CARREGOU!")
+        print("~~~~ PAGINA NÃO CARREGOU! ~~~~")
 
     if normal is False:
         normal = True
@@ -173,33 +173,33 @@ for k in range(0, 3):
             try:
                 origem = item.find_element_by_xpath(".//li[@data-selenium-selector='venue-metadata']").text
             except:
-                print('Artigo ' + titulo + " não possui dados de origem.")
+                pass
 
             data = '-'
             try:
                 data = item.find_element_by_xpath(".//li[@data-selenium-selector='paper-year']").text
             except:
-                print('Artigo ' + titulo + " não possui dados de data de publicação.")
+                pass
 
             influencia = '0'
             try:
                 influencia = item.find_element_by_xpath(
                     ".//li[@data-selenium-selector='search-result-influential-citations']").text
             except:
-                print('Artigo ' + titulo + " não possui dados de influencia.")
+                pass
 
             velocidade = '0'
             try:
                 velocidade = item.find_element_by_xpath(
                     ".//li[@data-selenium-selector='search-result-citation-velocity']").text
             except:
-                print('Artigo ' + titulo + " não possui dados de velocidade de citação.")
+                pass
 
             link = '-'
             try:
                 link = item.find_element_by_xpath(".//a[@data-selenium-selector='paper-link']").get_attribute('href')
             except:
-                print('Artigo ' + titulo + " não possui link.")
+                pass
 
             novoArtigo = Artigo.Artigo(titulo, lista_autores_artigo, origem, data, influencia, velocidade, link)
 
@@ -225,6 +225,8 @@ for k in range(0, 3):
                 for autorTemp in lista_autores_artigo:
                     autorTemp.addArtigo(novoArtigo)
 
+            print('Artigo ' + titulo + " obtido com sucesso.")
+
         print('~~~~ PÁGINA ' + str(pag+1) + ' FINALIZADA COM SUCESSO ~~~~')
 
         try:
@@ -233,6 +235,8 @@ for k in range(0, 3):
         except:
             print("ASSUNTO NÃO POSSUI MAIS PAGINAS DE PESQUISA!")
             break
+    if k < 2:
+        print('~~~~ COMEÇANDO PESQUISA COM NOVOS PARÂMETROS ~~~~')
 
 print('~~~~ PESQUISA FINALIZADA COM SUCESSO ~~~~')
 gerenciador.saveArtigos(lista_artigos)
