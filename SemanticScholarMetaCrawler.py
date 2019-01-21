@@ -6,6 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 import time
 import os
 import platform
@@ -30,7 +31,7 @@ def retornaListaAutores(autores):
     return lista
 
 
-options = webdriver.ChromeOptions()
+options = Options()
 
 diretorio_atual = os.getcwd()
 
@@ -49,13 +50,9 @@ if os.path.exists(diretorio_pdf):
 else:
     os.mkdir('PDFs')
 
-options.add_experimental_option("prefs", {
-  "download.default_directory": diretorio_pdf,
-  "download.prompt_for_download": False,
-  "download.directory_upgrade": True,
-  "plugins.always_open_pdf_externally": True,
-  "safebrowsing.enabled": True
-})
+options.add_argument('--headless')
+options.add_argument('--no-sandbox')
+options.add_argument('--disable-gpu')
 
 pesquisa = str(input("Entre com sua pesquisa:\n"))
 paginas = int(input("Quantas paginas gostaria de pesquisar?\n"))
