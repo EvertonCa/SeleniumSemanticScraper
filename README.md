@@ -1,5 +1,5 @@
 # SeleniumSemanticScraper
-Automatically crawl meta data from papers from Semantic Scholar based on a given key phrase using Selenium WebDriver and saves it in a .xls (Excel) file.
+Automatically crawl meta data from papers from Semantic Scholar, based on a given key phrase using Selenium WebDriver and saves it in a .xls (Excel) file.
 
 # Running
 This program can run in Windows, Linux and MacOS.
