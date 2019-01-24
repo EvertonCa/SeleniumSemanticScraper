@@ -256,7 +256,7 @@ for k in range(0, 3):
 
             print('Article ' + titulo + " obtained with success.")
 
-        print('~~~~ PAGE ' + str(pag+1) + ' SUCCESSFULLY COMPLETED ~~~~')
+        print('~~~~ PAGE ' + str(pag+1) + ' COMPLETED SUCCESSFULLY ~~~~')
 
         try:
             element = driver.find_element_by_xpath("//a[@data-selenium-selector='next-page']")
@@ -273,4 +273,4 @@ gerenciador.saveAutores(lista_autores)
 driver.quit()
 os.chdir(diretorio_atual)
 excelExporter = ExcelExporter.ExcelExporter(pesquisa)
-print('~~~~ EXCEL SAVED WITH SUCESS ~~~~')
+print('~~~~ EXCEL SAVED SUCCESSFULLY ~~~~')

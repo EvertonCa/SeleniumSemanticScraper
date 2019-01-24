@@ -14,17 +14,18 @@ class ExcelExporter:
 
         os.chdir(diretorio_original)
 
-        worksheet_artigos = workbook.add_worksheet('ARTIGOS')
-        worksheet_autores = workbook.add_worksheet('AUTORES')
+        worksheet_artigos = workbook.add_worksheet('ARTICLES')
+        worksheet_autores = workbook.add_worksheet('AUTHORS')
 
         indice = 0
-        titulo = 1
-        autores = 2
-        publicado = 3
-        data = 4
-        influencia = 5
-        velocidade = 6
-        link = 7
+        type = 1
+        titulo = 2
+        autores = 3
+        publicado = 4
+        data = 5
+        influencia = 6
+        velocidade = 7
+        link = 8
         linha = 0
 
         primeiraLinha_format = workbook.add_format({'bold': True,
@@ -51,14 +52,15 @@ class ExcelExporter:
             'border': 1
         })
 
-        worksheet_artigos.write(linha, indice, 'Indice do Artigo', primeiraLinha_format)
-        worksheet_artigos.write(linha, titulo, 'Título do Artigo', primeiraLinha_format)
-        worksheet_artigos.write(linha, autores, 'Autores', primeiraLinha_format)
-        worksheet_artigos.write(linha, publicado, 'Origem da Publicação', primeiraLinha_format)
-        worksheet_artigos.write(linha, data, 'Ano de Publicação', primeiraLinha_format)
-        worksheet_artigos.write(linha, influencia, 'Fator de Influência', primeiraLinha_format)
-        worksheet_artigos.write(linha, velocidade, 'Velocidade de Citação', primeiraLinha_format)
-        worksheet_artigos.write(linha, link, 'Link do artigo', primeiraLinha_format)
+        worksheet_artigos.write(linha, indice, 'Index', primeiraLinha_format)
+        worksheet_artigos.write(linha, type, 'Article Type', primeiraLinha_format)
+        worksheet_artigos.write(linha, titulo, 'Title', primeiraLinha_format)
+        worksheet_artigos.write(linha, autores, 'Authors', primeiraLinha_format)
+        worksheet_artigos.write(linha, publicado, 'Publication Source', primeiraLinha_format)
+        worksheet_artigos.write(linha, data, 'Publication Year', primeiraLinha_format)
+        worksheet_artigos.write(linha, influencia, 'Influence Factor', primeiraLinha_format)
+        worksheet_artigos.write(linha, velocidade, 'Citation Velocity', primeiraLinha_format)
+        worksheet_artigos.write(linha, link, 'Article Link', primeiraLinha_format)
         linha += 1
 
         gerenciador = Gerenciador.Gerenciador(pesquisa)
@@ -70,6 +72,7 @@ class ExcelExporter:
         for artigo in listaDeArtigos:
             primeiraLinha = linha
             worksheet_artigos.write(linha, indice, str(numeroDoArtigo), one_line_format)
+            worksheet_artigos.write(linha, type, artigo.cite, one_line_format)
             worksheet_artigos.write(linha, titulo, artigo.titulo, one_line_format)
             worksheet_artigos.write(linha, publicado, artigo.publicado_em, one_line_format)
             worksheet_artigos.write(linha, data, artigo.data, one_line_format)
@@ -84,6 +87,7 @@ class ExcelExporter:
                 linha += 1
             if primeiraLinha != linha - 1:
                 worksheet_artigos.merge_range(primeiraLinha, indice, linha - 1, indice, str(numeroDoArtigo), merge_format)
+                worksheet_artigos.merge_range(primeiraLinha, type, linha - 1, type, artigo.cite, merge_format)
                 worksheet_artigos.merge_range(primeiraLinha, titulo, linha - 1, titulo, artigo.titulo, merge_format)
                 worksheet_artigos.merge_range(primeiraLinha, publicado, linha - 1, publicado, artigo.publicado_em,
                                               merge_format)
@@ -100,9 +104,9 @@ class ExcelExporter:
         artigos_autor = 2
         linha = 0
 
-        worksheet_autores.write(linha, nome_autor, 'Nome do Autor', primeiraLinha_format)
-        worksheet_autores.write(linha, link_autor, 'Pagina do Autor', primeiraLinha_format)
-        worksheet_autores.write(linha, artigos_autor, 'Artigos publicados relacionados', primeiraLinha_format)
+        worksheet_autores.write(linha, nome_autor, 'Author Name', primeiraLinha_format)
+        worksheet_autores.write(linha, link_autor, 'Author Page', primeiraLinha_format)
+        worksheet_autores.write(linha, artigos_autor, 'Related Published Articles', primeiraLinha_format)
         linha += 1
 
         for autor in listaDeAutores:

@@ -52,14 +52,14 @@ class Gerenciador:
         else:
             os.chdir(self.diretorio_files)
             os.mkdir(palavraChave)
-        self.arquivo_autores = diretorio_com_palavra_chave + 'Autores.pkl'
-        self.arquivo_artigos = diretorio_com_palavra_chave + 'Artigos.pkl'
-        caminho_autores = Path(diretorio_com_palavra_chave + 'Autores.pkl')
-        caminho_artigos = Path(diretorio_com_palavra_chave + 'Artigos.pkl')
+        self.arquivo_autores = diretorio_com_palavra_chave + 'Authors.pkl'
+        self.arquivo_artigos = diretorio_com_palavra_chave + 'Articles.pkl'
+        caminho_autores = Path(diretorio_com_palavra_chave + 'Authors.pkl')
+        caminho_artigos = Path(diretorio_com_palavra_chave + 'Articles.pkl')
         if caminho_artigos.is_file() is False:
             self.inicializaArtigos()
-            print('Arquivo Artigos.pkl criado!')
+            print('File Articles.pkl created!')
         if caminho_autores.is_file() is False:
             self.inicializaAutores()
-            print('Arquivo Autores.pkl criado!')
+            print('File Author.pkl created!')
 
