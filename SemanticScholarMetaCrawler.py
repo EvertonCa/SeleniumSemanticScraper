@@ -20,6 +20,12 @@ def retornaListaAutores(autores):
     return lista
 
 
+def returnTypeCite(citeString):
+    listCite = citeString.split('{')
+    type = listCite[0][1:]
+    return type
+
+
 options = Options()
 
 diretorio_atual = os.getcwd()
@@ -43,8 +49,8 @@ options.add_argument('--headless')
 options.add_argument('--no-sandbox')
 options.add_argument('--disable-gpu')
 
-pesquisa = str(input("Entre com sua pesquisa:\n"))
-paginas = int(input("Quantas páginas gostaria de pesquisar? Cada página retorna por volta de 30 resultados.\n"))
+pesquisa = str(input("Enter your search phrase:\n"))
+paginas = int(input("How many pages would you like to search? Each page returns around 30 results.\n"))
 
 gerenciador = Gerenciador.Gerenciador(pesquisa)
 lista_autores = gerenciador.loadAutores()
@@ -61,7 +67,12 @@ for k in range(0, 3):
         waitelement = WebDriverWait(driver, 20).\
             until(EC.presence_of_element_located((By.XPATH, "//select[@aria-label='Field of study filter']")))
     except TimeoutError:
-        print("~~~~ PAGINA NÃO CARREGOU! ~~~~")
+        print("~~~~ PAGE DID NOT LOAD! ~~~~")
+
+    try:
+        driver.find_element_by_xpath("//div[@class='copyright-banner__dismiss-btn button button--secondary']").click()
+    except:
+        pass
 
     driver.find_element_by_name('q').send_keys(pesquisa)
     driver.find_element_by_name('q').send_keys(Keys.ENTER)
@@ -70,7 +81,7 @@ for k in range(0, 3):
         waitelement = WebDriverWait(driver, 20).\
             until(EC.presence_of_element_located((By.XPATH, "//button[@data-selenium-selector='more-search-filters']")))
     except TimeoutError:
-        print("~~~~ PAGINA NÃO CARREGOU! ~~~~")
+        print("~~~~ PAGE DID NOT LOAD! ~~~~")
 
     if normal is False:
         normal = True
@@ -201,7 +212,25 @@ for k in range(0, 3):
             except:
                 pass
 
-            novoArtigo = Artigo.Artigo(titulo, lista_autores_artigo, origem, data, influencia, velocidade, link)
+            cite = '-'
+            try:
+                item.find_element_by_xpath(".//button[@data-selenium-selector='cite-link']").click()
+                try:
+                    waitelement = WebDriverWait(driver, 20). \
+                        until(EC.presence_of_element_located(
+                        (By.XPATH, "//cite[@class='formatted-citation formatted-citation--style-bibtex']")))
+                except TimeoutError:
+                    print("~~~~ PAGE DID NOT LOAD! ~~~~")
+
+                cite = driver.find_element_by_xpath(
+                    "//cite[@class='formatted-citation formatted-citation--style-bibtex']").text
+                driver.find_element_by_xpath(
+                    "//cite[@class='formatted-citation formatted-citation--style-bibtex']").send_keys(Keys.ESCAPE)
+                cite = returnTypeCite(cite)
+            except:
+                pass
+
+            novoArtigo = Artigo.Artigo(titulo, lista_autores_artigo, origem, data, influencia, velocidade, link, cite)
 
             artigoRepetido = False
             if len(lista_artigos) == 0:
@@ -225,23 +254,23 @@ for k in range(0, 3):
                 for autorTemp in lista_autores_artigo:
                     autorTemp.addArtigo(novoArtigo)
 
-            print('Artigo ' + titulo + " obtido com sucesso.")
+            print('Article ' + titulo + " obtained with success.")
 
-        print('~~~~ PÁGINA ' + str(pag+1) + ' FINALIZADA COM SUCESSO ~~~~')
+        print('~~~~ PAGE ' + str(pag+1) + ' SUCCESSFULLY COMPLETED ~~~~')
 
         try:
             element = driver.find_element_by_xpath("//a[@data-selenium-selector='next-page']")
             driver.execute_script('arguments[0].click()', element)
         except:
-            print("ASSUNTO NÃO POSSUI MAIS PAGINAS DE PESQUISA!")
+            print("SUBJECT HAS NO MORE SEARCH PAGES!")
             break
     if k < 2:
-        print('~~~~ COMEÇANDO PESQUISA COM NOVOS PARÂMETROS ~~~~')
+        print('~~~~ STARTING SEARCH WITH NEW PARAMETERS ~~~~')
 
-print('~~~~ PESQUISA FINALIZADA COM SUCESSO ~~~~')
+print('~~~~ SEARCH COMPLETED SUCCESSFULLY ~~~~')
 gerenciador.saveArtigos(lista_artigos)
 gerenciador.saveAutores(lista_autores)
 driver.quit()
 os.chdir(diretorio_atual)
 excelExporter = ExcelExporter.ExcelExporter(pesquisa)
-print('~~~~ EXCEL SALVO COM SUCESSO ~~~~')
+print('~~~~ EXCEL SAVED WITH SUCESS ~~~~')
