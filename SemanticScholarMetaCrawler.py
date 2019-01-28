@@ -12,6 +12,21 @@ import platform
 import ExcelExporter
 import sys
 
+
+def message_start():
+    print('| ----------------------------------------------------------------------------- |')
+    print('| ---------------------   FEI - Computer Science Degree   --------------------- |')
+    print('| -------------------   Semantic Scholar Articles Crawler   ------------------- |')
+    print('| ----------------------------------------------------------------------------- |\n')
+
+
+def message_end():
+    print('| ----------------------------------------------------------------------------- |')
+    print('| --------  Created By Everton Cardoso Acchetta (eve.023@hotmail.com)  -------- |')
+    print('| -  Oriented By Professor Paulo Sergio Silva Rodrigues (psergio@fei.edu.br)  - |')
+    print('| ----------------------------------------------------------------------------- |\n')
+
+
 # increase the recursion limit to handle very large searches
 sys.setrecursionlimit(5000)
 
@@ -49,6 +64,9 @@ else:
 options.add_argument('--headless')
 options.add_argument('--no-sandbox')
 options.add_argument('--disable-gpu')
+
+# calls start message
+message_start()
 
 # user inputs
 input_search = str(input("Enter your search phrase:\n"))
@@ -321,3 +339,5 @@ os.chdir(current_directory)
 excelExporter = ExcelExporter.ExcelExporter(input_search)
 # feedback to user that the program has finished
 print('~~~~ EXCEL SAVED SUCCESSFULLY ~~~~')
+# calls end message
+message_end()
