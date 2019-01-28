@@ -98,25 +98,14 @@ class ExcelExporter:
             worksheet_artigos.write(linha, influencia, artigo.influencia, one_line_format)
             worksheet_artigos.write(linha, velocidade, artigo.velocidade, one_line_format)
             worksheet_artigos.write(linha, link, artigo.link, one_line_format)
+            authors = ''
             for autor in artigo.autores:
-                if autor.link is not None:
-                    worksheet_artigos.write_url(linha, autores, autor.link, autor_format, string=autor.nome)
-                else:
-                    worksheet_artigos.write_url(linha, autores, '', autor_format, string=autor.nome)
-                linha += 1
-            if primeiraLinha != linha - 1:
-                worksheet_artigos.merge_range(primeiraLinha, indice, linha - 1, indice, str(numeroDoArtigo), merge_format)
-                worksheet_artigos.merge_range(primeiraLinha, type, linha - 1, type, article_label, merge_format)
-                worksheet_artigos.merge_range(primeiraLinha, titulo, linha - 1, titulo, artigo.titulo, merge_format)
-                worksheet_artigos.merge_range(primeiraLinha, publicado, linha - 1, publicado, artigo.publicado_em,
-                                              merge_format)
-                worksheet_artigos.merge_range(primeiraLinha, data, linha - 1, data, artigo.data, merge_format)
-                worksheet_artigos.merge_range(primeiraLinha, influencia, linha - 1, influencia, artigo.influencia,
-                                              merge_format)
-                worksheet_artigos.merge_range(primeiraLinha, velocidade, linha - 1, velocidade, artigo.velocidade,
-                                              merge_format)
-                worksheet_artigos.merge_range(primeiraLinha, link, linha - 1, link, artigo.link, merge_format)
+                authors += autor.nome + ', '
+            authors = authors[:-2]
+            worksheet_artigos.write(linha, autores, authors, one_line_format)
+
             numeroDoArtigo += 1
+            linha += 1
 
         nome_autor = 0
         link_autor = 1
