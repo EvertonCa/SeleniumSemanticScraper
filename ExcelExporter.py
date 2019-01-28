@@ -28,6 +28,11 @@ class ExcelExporter:
         link = 8
         linha = 0
 
+        label_comment = 'Label NUMBER: 1 -> article\n' \
+                        'Label NUMBER: 2 -> conference, inproceedings, proceedings or phdthesis\n' \
+                        'Label NUMBER: 3 -> mastersthesis, book, inbook, Incollection or techreport\n' \
+                        'Label NUMBER: 4 -> manual, misc or unpublished'
+
         primeiraLinha_format = workbook.add_format({'bold': True,
                                                     'font_size': '16',
                                                     'align': 'center',
@@ -54,6 +59,7 @@ class ExcelExporter:
 
         worksheet_artigos.write(linha, indice, 'Index', primeiraLinha_format)
         worksheet_artigos.write(linha, type, 'Article Type', primeiraLinha_format)
+        worksheet_artigos.write_comment(linha, type, label_comment)
         worksheet_artigos.write(linha, titulo, 'Title', primeiraLinha_format)
         worksheet_artigos.write(linha, autores, 'Authors', primeiraLinha_format)
         worksheet_artigos.write(linha, publicado, 'Publication Source', primeiraLinha_format)
@@ -72,7 +78,20 @@ class ExcelExporter:
         for artigo in listaDeArtigos:
             primeiraLinha = linha
             worksheet_artigos.write(linha, indice, str(numeroDoArtigo), one_line_format)
-            worksheet_artigos.write(linha, type, artigo.cite, one_line_format)
+
+            article_label = ''
+            if artigo.cite == 'article':
+                article_label = '1'
+            elif artigo.cite == 'conference' or artigo.cite == 'inproceedings' or artigo.cite == 'proceedings' or \
+                    artigo.cite == 'phdthesis':
+                article_label = '2'
+            elif artigo.cite == 'mastersthesis' or artigo.cite == 'book' or artigo.cite == 'inbook' or \
+                    artigo.cite == 'Incollection' or artigo.cite == 'techreport':
+                article_label = '3'
+            else:
+                article_label = '4'
+
+            worksheet_artigos.write(linha, type, article_label, one_line_format)
             worksheet_artigos.write(linha, titulo, artigo.titulo, one_line_format)
             worksheet_artigos.write(linha, publicado, artigo.publicado_em, one_line_format)
             worksheet_artigos.write(linha, data, artigo.data, one_line_format)
@@ -87,7 +106,7 @@ class ExcelExporter:
                 linha += 1
             if primeiraLinha != linha - 1:
                 worksheet_artigos.merge_range(primeiraLinha, indice, linha - 1, indice, str(numeroDoArtigo), merge_format)
-                worksheet_artigos.merge_range(primeiraLinha, type, linha - 1, type, artigo.cite, merge_format)
+                worksheet_artigos.merge_range(primeiraLinha, type, linha - 1, type, article_label, merge_format)
                 worksheet_artigos.merge_range(primeiraLinha, titulo, linha - 1, titulo, artigo.titulo, merge_format)
                 worksheet_artigos.merge_range(primeiraLinha, publicado, linha - 1, publicado, artigo.publicado_em,
                                               merge_format)
