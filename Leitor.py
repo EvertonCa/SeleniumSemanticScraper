@@ -1,11 +1,12 @@
 import ExcelExporter
 import Gerenciador
 
-gerenciador = Gerenciador.Gerenciador('Artificial Inteligence')
+search = str(input('Search Phrase:'))
+gerenciador = Gerenciador.Gerenciador(search)
 lista_autores = gerenciador.loadAutores()
 lista_artigos = gerenciador.loadArtigos()
 
-leitor = ExcelExporter.ExcelExporter('Artificial Inteligence')
-print('Pronto')
+leitor = ExcelExporter.ExcelExporter(search)
+print('Done')
 
 
