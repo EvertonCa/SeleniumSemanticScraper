@@ -34,8 +34,8 @@ sys.setrecursionlimit(5000)
 # extract the type of the article from the BibText cite text and returns it as a single word string
 def return_type_cite(string_cite):
     list_cite = string_cite.split('{')
-    type = list_cite[0][1:]
-    return type
+    type_cite = list_cite[0][1:]
+    return type_cite
 
 
 # options handler for Google Chrome
