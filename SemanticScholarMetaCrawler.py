@@ -336,7 +336,8 @@ manager.saveAutores(list_authors)
 driver.quit()
 # creates the excel file
 os.chdir(current_directory)
-excelExporter = ExcelExporter.ExcelExporter(input_search)
+excelExporter = ExcelExporter.ExcelExporter()
+excelExporter.single_creator(input_search)
 # feedback to user that the program has finished
 print('~~~~ EXCEL SAVED SUCCESSFULLY ~~~~')
 # calls end message
