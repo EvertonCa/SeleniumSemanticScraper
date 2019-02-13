@@ -29,6 +29,7 @@ class ExcelExporter:
         influencia = 6
         velocidade = 7
         link = 8
+        bibtex = 9
         linha = 0
 
         label_comment = 'Label NUMBER: 1 -> article\n' \
@@ -70,6 +71,7 @@ class ExcelExporter:
         worksheet_artigos.write(linha, influencia, 'Influence Factor', primeiraLinha_format)
         worksheet_artigos.write(linha, velocidade, 'Citation Velocity', primeiraLinha_format)
         worksheet_artigos.write(linha, link, 'Article Link', primeiraLinha_format)
+        worksheet_artigos.write(linha, bibtex, 'BibTex', primeiraLinha_format)
         linha += 1
 
         numeroDoArtigo = 1
@@ -97,6 +99,7 @@ class ExcelExporter:
             worksheet_artigos.write(linha, influencia, artigo.influencia, one_line_format)
             worksheet_artigos.write(linha, velocidade, artigo.velocidade, one_line_format)
             worksheet_artigos.write(linha, link, artigo.link, one_line_format)
+            worksheet_artigos.write(linha, bibtex, artigo.bibtex, one_line_format)
             authors = ''
             for autor in artigo.autores:
                 authors += autor.nome + ', '
@@ -157,6 +160,7 @@ class ExcelExporter:
         influencia = 6
         velocidade = 7
         link = 8
+        bibtex = 9
         linha = 0
 
         label_comment = 'Label NUMBER: 1 -> article\n' \
@@ -198,6 +202,7 @@ class ExcelExporter:
         worksheet_artigos.write(linha, influencia, 'Influence Factor', primeiraLinha_format)
         worksheet_artigos.write(linha, velocidade, 'Citation Velocity', primeiraLinha_format)
         worksheet_artigos.write(linha, link, 'Article Link', primeiraLinha_format)
+        worksheet_artigos.write(linha, bibtex, 'BibTex', primeiraLinha_format)
         linha += 1
 
         gerenciador = Gerenciador.Gerenciador(pesquisa)
@@ -229,6 +234,7 @@ class ExcelExporter:
             worksheet_artigos.write(linha, influencia, artigo.influencia, one_line_format)
             worksheet_artigos.write(linha, velocidade, artigo.velocidade, one_line_format)
             worksheet_artigos.write(linha, link, artigo.link, one_line_format)
+            worksheet_artigos.write(linha, bibtex, artigo.bibtex, one_line_format)
             authors = ''
             for autor in artigo.autores:
                 authors += autor.nome + ', '

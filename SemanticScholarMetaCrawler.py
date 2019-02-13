@@ -268,6 +268,7 @@ for k in range(0, 3):
 
             # saves the article type as a string
             cite = '-'
+            bibtex = '-'
             try:
                 item.find_element_by_xpath(".//button[@data-selenium-selector='cite-link']").click()
                 try:
@@ -281,12 +282,14 @@ for k in range(0, 3):
                     "//cite[@class='formatted-citation formatted-citation--style-bibtex']").text
                 driver.find_element_by_xpath(
                     "//cite[@class='formatted-citation formatted-citation--style-bibtex']").send_keys(Keys.ESCAPE)
+                bibtex = cite
                 cite = return_type_cite(cite)
             except:
                 pass
 
             # creates a new instance of a Article object
-            new_article = Artigo.Artigo(title, list_authors_in_article, origin, date, influence, velocity, link, cite)
+            new_article = Artigo.Artigo(title, list_authors_in_article, origin, date,
+                                        influence, velocity, link, cite, bibtex)
 
             # checks if the article already exists, and if not, adds it to the articles list
             repeated_article = False
