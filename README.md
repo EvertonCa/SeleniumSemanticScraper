@@ -14,3 +14,17 @@ The second question wants to know how many pages do you like to be scrapped. Not
 
 A message with each article successfully searched will be displayed in the terminal. After the search is complete, a .xls file will be generated in the folder **/Files/YOUR SEARCH/**.
 
+# Multiple Searches
+When searching for multiple subjects, you can use the file **UniteArticles.py** to generate one Excel file for all the searches you've made.
+Run the file by the command `python UniteArticles.py` and copy all the **.pkl** files from your previous searches to the folder **Unite**.
+Rename the files so that they have a increasing number sequency after their names. For example:
+
+**Articles1.pkl**
+
+**Articles2.pkl**
+
+**Authors1.pkl**
+
+**Authors2.pkl**
+
+Inform the quantity of searches you are merging. Using the example above, the number would be 2. After that the Excel file will be generated in the same folder.
