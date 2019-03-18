@@ -11,6 +11,7 @@ import os
 import platform
 import ExcelExporter
 import sys
+import ProgressBar
 
 
 def message_start():
@@ -131,7 +132,12 @@ for k in range(0, 3):
                 pass
 
     # runs the code for the amount of pages desired
+    progress_index = 1
     for pag in range(0, input_pages):
+        # progress bar
+        ProgressBar.update_progress(progress_index / input_pages)
+        progress_index += 1
+
         # waits for the page to load
         while True:
             try:
@@ -315,9 +321,9 @@ for k in range(0, 3):
                     autorTemp.addArtigo(new_article)
 
             # feedback to user
-            print('Article ' + title + " obtained with success.")
+            # print('Article ' + title + " obtained with success.")
 
-        print('~~~~ PAGE ' + str(pag+1) + ' COMPLETED SUCCESSFULLY ~~~~')
+        # print('~~~~ PAGE ' + str(pag+1) + ' COMPLETED SUCCESSFULLY ~~~~')
 
         # tries to go to the next page, if exists
         try:
@@ -332,6 +338,7 @@ for k in range(0, 3):
 
 # feedback to user
 print('~~~~ SEARCH COMPLETED SUCCESSFULLY ~~~~')
+print('~~~~ ' + str(len(list_articles)) + ' articles successfully gathered. ~~~~')
 # saves the list of articles and authors as .pkl files
 manager.saveArtigos(list_articles)
 manager.saveAutores(list_authors)
