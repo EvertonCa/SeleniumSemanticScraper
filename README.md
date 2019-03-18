@@ -27,4 +27,4 @@ Rename the files so that they have a increasing number sequency after their name
 
 **Authors2.pkl**
 
-Inform the quantity of searches you are merging. Using the example above, the number would be 2. After that the Excel file will be generated in the same folder.
+Press ENTER. After that the Excel file will be generated in the same folder.
