@@ -34,7 +34,15 @@ print('Please put the Articles.pkl and Authors.pkl files of the searches you wou
 print('Rename the files to ArticlesX.pkl and AuthorsX.pkl, where X is a number starting from 1 to '
       'the quantity of searches you would like to merge.')
 
-quantity_files = int(input('How many searches would you like to merge in one Excel file?\n'))
+input('Press ENTER when ready!')
+
+all_pkl_files = os.listdir(directory_unite)
+all_pkl_names = []
+for temp_file_names in all_pkl_files:
+    if temp_file_names[-4:] == '.pkl':
+        all_pkl_names.append(temp_file_names)
+
+quantity_files = int(len(all_pkl_files)/2)
 
 # merge all files into one
 articles_list = []
