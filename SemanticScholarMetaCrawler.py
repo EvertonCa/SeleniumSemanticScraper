@@ -12,7 +12,7 @@ import platform
 import ExcelExporter
 import sys
 import ProgressBar
-
+import Timer
 
 def message_start():
     print('| ----------------------------------------------------------------------------- |')
@@ -72,6 +72,8 @@ message_start()
 # user inputs
 input_search = str(input("Enter your search phrase:\n"))
 input_pages = int(input("How many pages would you like to search? Each page returns around 30 results.\n"))
+
+start_time = Timer.timeNow()
 
 # loads files for the inputted search if they exist, otherwise, the files are created
 manager = Gerenciador.Gerenciador(input_search)
@@ -336,8 +338,9 @@ for k in range(0, 3):
     if k < 2:
         print('~~~~ STARTING SEARCH WITH NEW PARAMETERS ~~~~')
 
+end_time = Timer.timeNow()
 # feedback to user
-print('~~~~ SEARCH COMPLETED SUCCESSFULLY ~~~~')
+print('~~~~ SEARCH COMPLETED SUCCESSFULLY IN ' + str(Timer.totalTime(start_time, end_time)) + ' ~~~~')
 print('~~~~ ' + str(len(list_articles)) + ' articles successfully gathered. ~~~~')
 # saves the list of articles and authors as .pkl files
 manager.saveArtigos(list_articles)
