@@ -19,12 +19,7 @@ When searching for multiple subjects, you can use the file **UniteArticles.py** 
 Run the file by the command `python UniteArticles.py` and copy all the **.pkl** files from your previous searches to the folder **Unite**.
 Rename the files so that they have a increasing number sequency after their names. For example:
 
-**Articles1.pkl**
 
-**Articles2.pkl**
-
-**Authors1.pkl**
-
-**Authors2.pkl**
+![Print](SupportImages/UnitePrint.png)
 
 Press ENTER. After that the Excel file will be generated in the same folder.
