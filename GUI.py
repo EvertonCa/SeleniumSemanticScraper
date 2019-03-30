@@ -1,4 +1,5 @@
 from appJar import gui
+from SemanticScholarMetaCrawler import Crawler
 
 
 class GUI:
@@ -7,6 +8,10 @@ class GUI:
         self.app.setGuiPadding(20, 20)
         self.app.setLocation('CENTER')
         self.app.setFont(16)
+        self.search_phrase = ''
+        self.input_pages = 0
+        self.progress_bar_percentage = 0
+        self.crawler = None
 
     def menus_pressed(self):
         pass
@@ -29,10 +34,26 @@ class GUI:
         self.app.addLabel('Label_Pages_Quantity', 'Please select how many pages would you like to search:', 1, 0)
         self.app.setSticky('we')
         self.app.setStretch('column')
-        self.app.addScale('Quantity', column=1, row=1)
-        self.app.setScaleRange('Quantity', 0, 200, 10)
-        self.app.showScaleIntervals('Quantity', 25)
-        self.app.showScaleValue('Quantity', True)
+        self.app.addScale('Quantity_scale', column=1, row=1)
+        self.app.setScaleRange('Quantity_scale', 0, 200, 10)
+        self.app.showScaleIntervals('Quantity_scale', 25)
+        self.app.showScaleValue('Quantity_scale', True)
+
+    def update_progress_bar(self):
+        self.app.setMeter('progress_bar', self.progress_bar_percentage)
+
+    def show_done_alert(self):
+        self.app.infoBox('DONE', 'Done!')
+
+    def progress_bar(self):
+        self.app.setStretch('column')
+        self.app.setSticky('nwe')
+        self.app.addLabel('progress_bar_label', 'Crawling...')
+        self.app.setStretch('both')
+        self.app.setSticky('nswe')
+        self.app.addMeter('progress_bar', column=0, row=1)
+        self.app.setMeterFill('progress_bar', 'blue')
+        self.app.addButton('Start Search!', self.press, column=0, row=2)
 
     def main_page(self):
         self.menus()
@@ -44,8 +65,7 @@ class GUI:
         self.app.stopFrame()
 
         self.app.startFrame('Progress')
-        for i in range(5):
-            self.app.addEntry("e" + str(i))
+        self.progress_bar()
         self.app.stopFrame()
 
         self.app.startFrame('Saving Options')
@@ -55,21 +75,24 @@ class GUI:
 
         self.app.stopFrameStack()
 
-        self.app.setSticky('e')
-        self.app.addButtons(['Next'], self.press)
+        self.app.setSticky('se')
+        self.app.addButton('Next', self.press)
         self.app.firstFrame('Pages')
         self.app.go()
 
+    def create_crawler(self):
+        self.crawler = Crawler(self.search_phrase, self.input_pages)
+        self.crawler.start_search()
+        self.crawler.saves_excel()
+
     def press(self, btn):
-        if btn == "FIRST":
-            self.app.firstFrame("Pages")
-        elif btn == "NEXT":
-            self.app.nextFrame("Pages")
-        elif btn == "PREV":
-            self.app.prevFrame("Pages")
-        elif btn == "LAST":
-            self.app.lastFrame("Pages")
+        if btn == "Next":
+            self.search_phrase = self.app.getEntry('Entry_Search')
+            self.input_pages = self.app.getScale('Quantity_scale')
+            if self.input_pages == 0:
+                self.app.errorBox('Erro!', 'Selecting 0 pages will end up with a empty search!')
+            else:
+                self.app.nextFrame("Pages")
 
-
-gui = GUI()
-gui.main_page()
+        elif btn == "Start Search!":
+            self.create_crawler()
