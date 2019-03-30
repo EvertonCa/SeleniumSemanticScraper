@@ -5,7 +5,62 @@ import os
 
 class ExcelExporter:
     def __init__(self):
-        pass
+        self.ordered_date_articles_list = []
+        self.ordered_influence_articles_list = []
+        self.ordered_velocity_articles_list = []
+        self.alpha1 = 1
+        self.alpha2 = 1
+        self.alpha3 = 1
+
+    def order_or_not(self):
+        answer = input('Would you like to order your search? Y or N?')
+        if answer == 'Y' or answer == 'y':
+            print('How would you like to order your file?')
+            print('1 - Order by Optimized Rating (RECOMMENDED)')
+            print('2 - Order by Influence Factor')
+            print('3 - Order by Citation Velocity')
+            print('4 - Order by Newer Articles')
+            answer2 = input('Enter your desired option: ')
+            if answer2 == 1:
+                self.define_alphas()
+            else:
+                pass
+
+    def define_alphas(self):
+        print('Your search will be ordered using the following algorithm:')
+        print('((Alpha1 / (Alpha1 + Alpha2 + Alpha3)) * (Article￿ Citation ￿Velocity / Highest Citation Velocity)) + '
+              '((Alpha2 / (Alpha1 + Alpha2 + Alpha3)) * (Article Influence Factor / Highest Influence Factor)) + '
+              '((Alpha3 / (Alpha1 + Alpha2 + Alpha3)) + (Article Date / Newest Date)) <= 1')
+        print('Articles with rating closest to 1 will be displayed first in the Excel file')
+
+        self.alpha1 = input('Please input the value you would like to consider for Alpha1.')
+        self.alpha2 = input('Please input the value you would like to consider for Alpha2.')
+        self.alpha3 = input('Please input the value you would like to consider for Alpha3.')
+
+    def order_articles(self, articles_list):
+        max_influence = 0
+        max_velocity = 0
+        newer_date = 0
+        for article in articles_list:
+            if int(article.data) > newer_date:
+                newer_date = int(article.data)
+            if int(article.influencia) > max_influence:
+                max_influence = int(article.influencia)
+            if int(article.velocidade) > max_velocity:
+                max_velocity = int(article.velocidade)
+
+        for article in articles_list:
+            article.data_relativa = int(article.data) / newer_date
+            article.influencia_relativa = int(article.influencia) / max_influence
+            article.velocidade_relativa = int(article.velocidade) / max_velocity
+
+        self.ordered_date_articles_list = articles_list
+        self.ordered_influence_articles_list = articles_list
+        self.ordered_velocity_articles_list = articles_list
+
+        self.ordered_velocity_articles_list.sort(key=lambda model: model.velocidade_relativa, reverse=True)
+        self.ordered_influence_articles_list.sort(key=lambda model: model.influencia_relativa, reverse=True)
+        self.ordered_date_articles_list.sort(key=lambda model: model.data_relativa, reverse=True)
 
     def merge_creator(self, articles_list, authors_list):
         diretorio_original = os.getcwd()

@@ -14,6 +14,7 @@ import sys
 import ProgressBar
 import Timer
 
+
 def message_start():
     print('| ----------------------------------------------------------------------------- |')
     print('| ---------------------   FEI - Computer Science Degree   --------------------- |')
