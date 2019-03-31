@@ -13,6 +13,7 @@ import ExcelExporter
 import sys
 import ProgressBar
 import Timer
+from appJar import gui
 
 
 def message_start():
@@ -30,7 +31,7 @@ def message_end():
 
 
 class Crawler:
-    def __init__(self, input_search, input_pages):
+    def __init__(self):
         # increase the recursion limit to handle very large searches
         sys.setrecursionlimit(5000)
 
@@ -63,6 +64,14 @@ class Crawler:
         self.list_authors = []
         self.list_articles = []
 
+        self.input_search = ''
+        self.input_pages = ''
+
+        self.gui = None
+
+        self.index_progress_bar = 1
+
+    def update_search_parameters(self, input_search, input_pages):
         self.input_search = input_search
         self.input_pages = input_pages
 
@@ -90,6 +99,11 @@ class Crawler:
 
         # runs the following code 3 times, one for each type os search
         for k in range(0, 3):
+            # label gui
+            self.gui.app.queueFunction(self.gui.app.setLabel, 'progress_bar_label', 'Crawling with '
+                                       + str(k+1) + 'º parameter...')
+            self.gui.app.queueFunction(self.gui.app.setMeter, 'progress_bar', 0)
+
             # access Semantic Scholar main page
             driver.get('https://www.semanticscholar.org/')
 
@@ -138,11 +152,14 @@ class Crawler:
                         pass
 
             # runs the code for the amount of pages desired
-            progress_index = 1
+            self.index_progress_bar = 1
+
             for pag in range(0, self.input_pages):
                 # progress bar
-                ProgressBar.update_progress(progress_index / self.input_pages)
-                progress_index += 1
+                self.gui.app.queueFunction(self.gui.app.setMeter, 'progress_bar',
+                                           (100 * self.index_progress_bar)/self.input_pages)
+
+                self.index_progress_bar += 1
 
                 # waits for the page to load
                 while True:
@@ -340,23 +357,19 @@ class Crawler:
                 except:
                     print("SUBJECT HAS NO MORE SEARCH PAGES!")
                     break
-            # feedback to user
-            if k < 2:
-                print('~~~~ STARTING SEARCH WITH NEW PARAMETERS ~~~~')
 
         self.end_time = Timer.timeNow()
 
         # closes the Google Chrome
         driver.quit()
 
-    def saves_excel(self):
-        # feedback to user
-        print('~~~~ SEARCH COMPLETED SUCCESSFULLY IN ' + str(Timer.totalTime(self.start_time, self.end_time)) + ' ~~~~')
-        print('~~~~ ' + str(len(self.list_articles)) + ' articles successfully gathered. ~~~~')
         # saves the list of articles and authors as .pkl files
         self.manager.saveArtigos(self.list_articles)
         self.manager.saveAutores(self.list_authors)
 
+        self.gui.show_done_alert(Timer.totalTime(self.start_time, self.end_time), str(len(self.list_articles)))
+
+    def saves_excel(self):
         # creates the excel file
         os.chdir(self.current_directory)
         excelExporter = ExcelExporter.ExcelExporter()
