@@ -9,8 +9,10 @@ class GUI:
         self.app.setFont(16)
         self.search_phrase = ''
         self.input_pages = 0
-        self.progress_bar_percentage = 0
         self.crawler = None
+        self.alpha1 = 1
+        self.alpha2 = 1
+        self.alpha3 = 1
 
     def menus_pressed(self):
         pass
@@ -27,19 +29,18 @@ class GUI:
         self.app.addLabel('Label_Search', 'Enter your search phrase:', row=0)
         self.app.addEntry('Entry_Search', row=1)
         self.app.addLabel('label_space', '', row=2)
-        self.app.addLabel('Label_Pages_Quantity', 'Select how many pages would you like to search:',
-                          row=3)
+        self.app.addLabel('Label_Pages_Quantity', 'Select how many pages would you like to search:', row=3)
         self.app.addScale('Quantity_scale', row=4)
         self.app.setScaleRange('Quantity_scale', 0, 200, 1)
         self.app.showScaleIntervals('Quantity_scale', 25)
         self.app.showScaleValue('Quantity_scale', True)
 
-    def update_progress_bar(self):
-        self.app.setMeter('progress_bar', self.progress_bar_percentage)
-
-    def show_done_alert(self, time, quantity):
+    def show_search_done_alert(self, time, quantity):
         self.app.infoBox('DONE', 'Search Completed in ' + str(time.seconds) + ' second(s) with ' +
                          quantity + ' articles successfully gathered.')
+
+    def show_saved_alert(self, saved_path):
+        self.app.infoBox('SAVED', 'Your search is saved at this location ' + saved_path)
 
     def progress_bar(self):
         self.app.setStretch('column')
@@ -51,6 +52,29 @@ class GUI:
         self.app.setMeterFill('progress_bar', 'gray')
         self.app.setSticky('')
         self.app.addButton('Start Search!', self.press, column=0, row=2)
+
+    def save_menu(self):
+        self.app.setStretch('column')
+        self.app.setSticky('we')
+        self.app.addLabel('Label_Save_options', 'How would you like your search to be ordered?')
+        self.app.setSticky('w')
+        self.app.addRadioButton('Save_option_radioButton', "Optimized Rating (RECOMMENDED)")
+        self.app.addRadioButton('Save_option_radioButton', "Influence Factor")
+        self.app.addRadioButton('Save_option_radioButton', "Citation Velocity")
+        self.app.addRadioButton('Save_option_radioButton', "Newer Articles")
+        self.app.addRadioButton('Save_option_radioButton', "Alphabetically, by Article's Title")
+        self.app.setSticky('')
+        self.app.addButton('Save!', self.press)
+
+    def alphas_selection(self):
+        self.app.addLabel('Label_alphas_info', 'Your search will be saved using the equation below.')
+        self.app.addImage('Alphas', 'Images/Alphas Equation.gif')
+        self.app.addLabel('Label_alphas_options',
+                          'Enter the desired Alphas for your search. (For a basic order, enter 1 for all alphas)')
+        self.app.addLabelEntry('Alpha1')
+        self.app.addLabelEntry('Alpha2')
+        self.app.addLabelEntry('Alpha3')
+        self.app.addButton('OK!', self.press)
 
     def main_page(self):
         self.menus()
@@ -66,8 +90,7 @@ class GUI:
         self.app.stopFrame()
 
         self.app.startFrame('Saving Options')
-        for i in range(5):
-            self.app.addButton(str(i), None)
+        self.save_menu()
         self.app.stopFrame()
 
         self.app.stopFrameStack()
@@ -80,7 +103,13 @@ class GUI:
     def create_crawler(self):
         self.crawler.update_search_parameters(self.search_phrase, self.input_pages)
         self.crawler.start_search()
-        self.crawler.saves_excel()
+
+    def get_alphas_and_start(self):
+        self.alpha1 = int(self.app.getEntry('Alpha1'))
+        self.alpha2 = int(self.app.getEntry('Alpha2'))
+        self.alpha3 = int(self.app.getEntry('Alpha3'))
+        self.app.thread(self.crawler.saves_excel(self.app.getRadioButton('Save_option_radioButton')))
+        self.app.destroySubWindow('Alphas')
 
     def press(self, btn):
         if btn == "Next":
@@ -94,3 +123,16 @@ class GUI:
         elif btn == "Start Search!":
             self.app.setLabel('progress_bar_label', 'Getting Ready...')
             self.app.thread(self.create_crawler)
+
+        elif btn == 'Save!':
+            if self.app.getRadioButton('Save_option_radioButton') == "Optimized Rating (RECOMMENDED)":
+                self.app.startSubWindow('Alphas', 'Select Alphas', True, )
+                self.app.showSubWindow('Alphas')
+                self.alphas_selection()
+                self.app.stopSubWindow()
+            else:
+                self.crawler.saves_excel(self.app.getRadioButton('Save_option_radioButton'))
+
+        elif btn == 'OK!':
+            self.get_alphas_and_start()
+

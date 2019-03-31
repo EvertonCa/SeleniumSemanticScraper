@@ -11,23 +11,7 @@ import os
 import platform
 import ExcelExporter
 import sys
-import ProgressBar
 import Timer
-from appJar import gui
-
-
-def message_start():
-    print('| ----------------------------------------------------------------------------- |')
-    print('| ---------------------   FEI - Computer Science Degree   --------------------- |')
-    print('| -------------------   Semantic Scholar Articles Crawler   ------------------- |')
-    print('| ----------------------------------------------------------------------------- |\n')
-
-
-def message_end():
-    print('| ----------------------------------------------------------------------------- |')
-    print('| --------  Created By Everton Cardoso Acchetta (eve.023@hotmail.com)  -------- |')
-    print('| -  Oriented By Professor Paulo Sergio Silva Rodrigues (psergio@fei.edu.br)  - |')
-    print('| ----------------------------------------------------------------------------- |\n')
 
 
 class Crawler:
@@ -101,7 +85,7 @@ class Crawler:
         for k in range(0, 3):
             # label gui
             self.gui.app.queueFunction(self.gui.app.setLabel, 'progress_bar_label', 'Crawling with '
-                                       + str(k+1) + 'º parameter...')
+                                       + str(k+1) + '/3 parameter...')
             self.gui.app.queueFunction(self.gui.app.setMeter, 'progress_bar', 0)
 
             # access Semantic Scholar main page
@@ -153,7 +137,6 @@ class Crawler:
 
             # runs the code for the amount of pages desired
             self.index_progress_bar = 1
-
             for pag in range(0, self.input_pages):
                 # progress bar
                 self.gui.app.queueFunction(self.gui.app.setMeter, 'progress_bar',
@@ -266,7 +249,7 @@ class Crawler:
                         pass
 
                     # saves the article date as a string
-                    date = '-'
+                    date = '0'
                     try:
                         date = item.find_element_by_xpath(".//li[@data-selenium-selector='paper-year']").text
                     except:
@@ -277,6 +260,7 @@ class Crawler:
                     try:
                         influence = item.find_element_by_xpath(
                             ".//li[@data-selenium-selector='search-result-influential-citations']").text
+                        influence = influence.replace(',', '')
                     except:
                         pass
 
@@ -285,6 +269,7 @@ class Crawler:
                     try:
                         velocity = item.find_element_by_xpath(
                             ".//li[@data-selenium-selector='search-result-citation-velocity']").text
+                        velocity = velocity.replace(',', '')
                     except:
                         pass
 
@@ -367,16 +352,16 @@ class Crawler:
         self.manager.saveArtigos(self.list_articles)
         self.manager.saveAutores(self.list_authors)
 
-        self.gui.show_done_alert(Timer.totalTime(self.start_time, self.end_time), str(len(self.list_articles)))
+        self.gui.show_search_done_alert(Timer.totalTime(self.start_time, self.end_time), str(len(self.list_articles)))
 
-    def saves_excel(self):
+    def saves_excel(self, parameter):
         # creates the excel file
         os.chdir(self.current_directory)
-        excelExporter = ExcelExporter.ExcelExporter()
-        excelExporter.single_creator(self.input_search)
-        # feedback to user that the program has finished
-        print('~~~~ EXCEL SAVED SUCCESSFULLY ~~~~')
-        # calls end message
-        message_end()
+        excelExporter = ExcelExporter.ExcelExporter(self.input_search)
+        excelExporter.gui = self.gui
+        excelExporter.order_type(parameter)
+
+
+
 
 
