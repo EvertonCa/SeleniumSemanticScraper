@@ -11,9 +11,9 @@ This program can run in **Windows, Linux and MacOS**.
 - Run the file **Main.py** with the command `python Main.py` on your terminal or cmd.
 
 
-#Searching
+# Searching
 
-To perform your first search, click on the Button ￿"New Search"
+To perform your first search, click on the Button "New Search"
 
 ![Print](SupportImages/Initial_Page.png)
 
@@ -38,7 +38,7 @@ were gathered. After that you will be asked about how would you like to save you
 - The second option orders your search by Influence Factor
 - The third option orders your search by Citation Velocity
 - The forth option orders your search by Newest Articles
-- The last option orders your search by Alpabetical order, using the Article￿'s Title.
+- The last option orders your search by Alpabetical order, using the Article's Title.
 
 After selecting your option, press "Save!" and you will be shown a pop up telling your where the Excel file was saved.
 
@@ -50,13 +50,13 @@ input 1 for all alphas. Do not use decimal number.
 ![Print](SupportImages/Algorithm_Page.png)
 
 # Multiple Searches
-If you￿'d like to merge multiple searches, generating only one ordered Excel File, you can choose
+If you'd like to merge multiple searches, generating only one ordered Excel File, you can choose
 the "Merge Old Searches" button.
 
 ![Print](SupportImages/Initial_Page2.png)
 
 First, click on the "Select Folder" button (1). Select the folder in which your search was 
-saved. Repeat this to add all the searches you￿'d like. Then press "Merge Searches" (2).
+saved. Repeat this to add all the searches you'd like. Then press "Merge Searches" (2).
 
 ![Print](SupportImages/Merge_Page.png)
 
