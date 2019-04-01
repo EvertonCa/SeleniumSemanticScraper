@@ -8,5 +8,6 @@ class Main:
         self.gui.main_page()
 
 
-main = Main()
+if __name__ == "__main__":
+    main = Main()
 

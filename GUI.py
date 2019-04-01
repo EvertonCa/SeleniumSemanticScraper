@@ -1,6 +1,14 @@
 from appJar import gui
 from UniteArticles import Merger
 from SemanticScholarMetaCrawler import Crawler
+import os
+import sys
+
+
+def restart_program():
+    """Restarts the current program."""
+    python = sys.executable
+    os.execl(python, python, * sys.argv)
 
 
 class GUI:
@@ -24,9 +32,7 @@ class GUI:
 
     def menus_pressed(self, menu):
         if menu == 'New Search':
-            self.crawler = Crawler()
-            self.crawler.gui = self
-            self.app.firstFrame('Pages')
+            restart_program()
 
     def menus(self):
         file_menus = ["New Search", "-", "Close"]
