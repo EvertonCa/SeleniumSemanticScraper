@@ -34,10 +34,14 @@ class GUI:
         self.app.setScaleRange('Quantity_scale', 0, 200, 1)
         self.app.showScaleIntervals('Quantity_scale', 25)
         self.app.showScaleValue('Quantity_scale', True)
+        self.app.setStretch('both')
+        self.app.setSticky('se')
+        self.app.addNamedButton('Next', 'Next1', self.press)
 
     def show_search_done_alert(self, time, quantity):
         self.app.infoBox('DONE', 'Search Completed in ' + str(time.seconds) + ' second(s) with ' +
                          quantity + ' articles successfully gathered.')
+        self.app.setButtonState('Next2', 'normal')
 
     def show_saved_alert(self, saved_path):
         self.app.infoBox('SAVED', 'Your search is saved at this location ' + saved_path)
@@ -52,6 +56,10 @@ class GUI:
         self.app.setMeterFill('progress_bar', 'gray')
         self.app.setSticky('')
         self.app.addButton('Start Search!', self.press, column=0, row=2)
+        self.app.setStretch('both')
+        self.app.setSticky('se')
+        self.app.addNamedButton('Next', 'Next2', self.press)
+        self.app.setButtonState('Next2', 'disabled')
 
     def save_menu(self):
         self.app.setStretch('column')
@@ -95,8 +103,6 @@ class GUI:
 
         self.app.stopFrameStack()
 
-        self.app.setSticky('se')
-        self.app.addButton('Next', self.press)
         self.app.firstFrame('Pages')
         self.app.go()
 
@@ -112,7 +118,7 @@ class GUI:
         self.app.destroySubWindow('Alphas')
 
     def press(self, btn):
-        if btn == "Next":
+        if btn == "Next1" or btn == "Next2" or btn == "Next3":
             self.search_phrase = self.app.getEntry('Entry_Search')
             self.input_pages = self.app.getScale('Quantity_scale')
             if self.input_pages == 0:
