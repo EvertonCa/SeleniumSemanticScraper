@@ -4,8 +4,85 @@ import os
 
 
 class ExcelExporter:
-    def __init__(self):
-        pass
+    def __init__(self, search):
+        self.search_parameter = search
+        self.ordered_date_articles_list = []
+        self.ordered_influence_articles_list = []
+        self.ordered_velocity_articles_list = []
+        self.ordered_optimized_list = []
+        self.alpha1 = 1
+        self.alpha2 = 1
+        self.alpha3 = 1
+        self.gui = None
+
+    def order_type(self, parameter):
+        if parameter == 'Optimized Rating (RECOMMENDED)':
+            self.single_creator(1)
+        elif parameter == "Influence Factor":
+            self.single_creator(2)
+        elif parameter == "Citation Velocity":
+            self.single_creator(3)
+        elif parameter == "Newer Articles":
+            self.single_creator(4)
+        elif parameter == "Alphabetically, by Article's Title":
+            self.single_creator(5)
+
+    def define_alphas(self):
+        self.alpha1 = self.gui.alpha1
+        self.alpha2 = self.gui.alpha2
+        self.alpha3 = self.gui.alpha3
+
+    def order_optimized(self, articles_list):
+        max_influence = 0
+        max_velocity = 0
+        newer_date = 0
+        for article in articles_list:
+            if int(article.data) > newer_date:
+                newer_date = int(article.data)
+            if int(article.influencia) > max_influence:
+                max_influence = int(article.influencia)
+            if int(article.velocidade) > max_velocity:
+                max_velocity = int(article.velocidade)
+
+        for article in articles_list:
+            article.data_relativa = int(article.data) / newer_date
+            article.influencia_relativa = int(article.influencia) / max_influence
+            article.velocidade_relativa = int(article.velocidade) / max_velocity
+            article.total_factor = \
+                (((self.alpha1 / (self.alpha1 + self.alpha2 + self.alpha3)) * article.velocidade_relativa) +
+                 ((self.alpha2 / (self.alpha1 + self.alpha2 + self.alpha3)) * article.influencia_relativa) +
+                 ((self.alpha3 / (self.alpha1 + self.alpha2 + self.alpha3)) * article.data_relativa))
+
+        self.ordered_optimized_list = articles_list
+        self.ordered_optimized_list.sort(key=lambda model: model.total_factor, reverse=True)
+
+    def order_articles(self, articles_list, order_type):
+        max_influence = 0
+        max_velocity = 0
+        newer_date = 0
+        for article in articles_list:
+            if int(article.data) > newer_date:
+                newer_date = int(article.data)
+            if int(article.influencia) > max_influence:
+                max_influence = int(article.influencia)
+            if int(article.velocidade) > max_velocity:
+                max_velocity = int(article.velocidade)
+
+        for article in articles_list:
+            article.data_relativa = int(article.data) / newer_date
+            article.influencia_relativa = int(article.influencia) / max_influence
+            article.velocidade_relativa = int(article.velocidade) / max_velocity
+
+        self.ordered_date_articles_list = articles_list
+        self.ordered_influence_articles_list = articles_list
+        self.ordered_velocity_articles_list = articles_list
+
+        if order_type == 1:
+            self.ordered_influence_articles_list.sort(key=lambda model: model.influencia_relativa, reverse=True)
+        elif order_type == 2:
+            self.ordered_velocity_articles_list.sort(key=lambda model: model.velocidade_relativa, reverse=True)
+        else:
+            self.ordered_date_articles_list.sort(key=lambda model: model.data_relativa, reverse=True)
 
     def merge_creator(self, articles_list, authors_list):
         diretorio_original = os.getcwd()
@@ -138,13 +215,13 @@ class ExcelExporter:
 
         workbook.close()
 
-    def single_creator(self, pesquisa):
+    def single_creator(self, search_type):
         diretorio_original = os.getcwd()
 
-        os.chdir(diretorio_original + '/Files/' + pesquisa + '/')
-        diretorio_excel = diretorio_original + '/Files/' + pesquisa + '/'
+        os.chdir(diretorio_original + '/Files/' + self.search_parameter + '/')
+        diretorio_excel = diretorio_original + '/Files/' + self.search_parameter + '/'
 
-        workbook = xlsxwriter.Workbook(diretorio_excel + pesquisa + '.xlsx')
+        workbook = xlsxwriter.Workbook(diretorio_excel + self.search_parameter + '.xlsx')
 
         os.chdir(diretorio_original)
 
@@ -159,8 +236,9 @@ class ExcelExporter:
         data = 5
         influencia = 6
         velocidade = 7
-        link = 8
-        bibtex = 9
+        optimized = 8
+        link = 9
+        bibtex = 10
         linha = 0
 
         label_comment = 'Label NUMBER: 1 -> article\n' \
@@ -203,11 +281,28 @@ class ExcelExporter:
         worksheet_artigos.write(linha, velocidade, 'Citation Velocity', primeiraLinha_format)
         worksheet_artigos.write(linha, link, 'Article Link', primeiraLinha_format)
         worksheet_artigos.write(linha, bibtex, 'BibTex', primeiraLinha_format)
+        worksheet_artigos.write(linha, optimized, 'Optimized Factor', primeiraLinha_format)
         linha += 1
 
-        gerenciador = Gerenciador.Gerenciador(pesquisa)
+        gerenciador = Gerenciador.Gerenciador(self.search_parameter)
         listaDeArtigos = gerenciador.loadArtigos()
         listaDeAutores = gerenciador.loadAutores()
+
+        if search_type == 1:
+            self.define_alphas()
+            self.order_optimized(listaDeArtigos)
+            listaDeArtigos = self.ordered_optimized_list
+        elif search_type == 2:
+            self.order_articles(listaDeArtigos, 1)
+            listaDeArtigos = self.ordered_influence_articles_list
+        elif search_type == 3:
+            self.order_articles(listaDeArtigos, 2)
+            listaDeArtigos = self.ordered_velocity_articles_list
+        elif search_type == 4:
+            self.order_articles(listaDeArtigos, 3)
+            listaDeArtigos = self.ordered_date_articles_list
+        elif search_type == 5:
+            pass
 
         numeroDoArtigo = 1
 
@@ -233,6 +328,7 @@ class ExcelExporter:
             worksheet_artigos.write(linha, data, artigo.data, one_line_format)
             worksheet_artigos.write(linha, influencia, artigo.influencia, one_line_format)
             worksheet_artigos.write(linha, velocidade, artigo.velocidade, one_line_format)
+            worksheet_artigos.write(linha, optimized, artigo.total_factor, one_line_format)
             worksheet_artigos.write(linha, link, artigo.link, one_line_format)
             worksheet_artigos.write(linha, bibtex, artigo.bibtex, one_line_format)
             authors = ''
@@ -272,3 +368,5 @@ class ExcelExporter:
                                               merge_format)
 
         workbook.close()
+
+        self.gui.show_saved_alert(diretorio_excel)

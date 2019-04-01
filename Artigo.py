@@ -6,6 +6,10 @@ class Artigo:
         self.data = data
         self.influencia = influencia
         self.velocidade = velocidade
+        self.data_relativa = 0
+        self.influencia_relativa = 0
+        self.velocidade_relativa = 0
+        self.total_factor = 0
         self.link = link
         self.cite = cite
         self.bibtex = bibtex
