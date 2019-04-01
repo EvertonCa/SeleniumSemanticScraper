@@ -1,5 +1,6 @@
 from appJar import gui
 from UniteArticles import Merger
+from SemanticScholarMetaCrawler import Crawler
 
 
 class GUI:
@@ -10,7 +11,7 @@ class GUI:
         self.app.setFont(16)
         self.search_phrase = ''
         self.input_pages = 0
-        self.crawler = None
+        self.crawler = Crawler()
         self.alpha1 = 1
         self.alpha2 = 1
         self.alpha3 = 1
@@ -19,9 +20,13 @@ class GUI:
         self.single_or_merge = False
         self.merger = None
 
+        self.crawler.gui = self
+
     def menus_pressed(self, menu):
         if menu == 'New Search':
-            pass
+            self.crawler = Crawler()
+            self.crawler.gui = self
+            self.app.firstFrame('Pages')
 
     def menus(self):
         file_menus = ["New Search", "-", "Close"]
@@ -91,14 +96,24 @@ class GUI:
         self.app.addButton('Merge Old Searches', self.press)
 
     def alphas_selection(self):
-        self.app.addLabel('Label_alphas_info', 'Your search will be saved using the equation below.')
-        self.app.addImage('Alphas', 'Images/Alphas_Equation.gif')
+        self.app.addLabel('Label_alphas_info', 'Your search will be saved using the equation below.', colspan=2)
+        self.app.addImage('Alphas', 'Images/Alphas_Equation.gif', colspan=2)
         self.app.addLabel('Label_alphas_options',
-                          'Enter the desired Alphas for your search. (For a basic order, enter 1 for all alphas)')
-        self.app.addLabelEntry('Alpha1')
-        self.app.addLabelEntry('Alpha2')
-        self.app.addLabelEntry('Alpha3')
-        self.app.addButton('OK!', self.press)
+                          'Enter the desired Alphas for your search. (For a basic order, enter 1 for all alphas)', colspan=2)
+        self.app.setSticky('e')
+        self.app.addLabel('Alpha1 (Citation Velocity)', row=3, column=0)
+        self.app.setSticky('w')
+        self.app.addEntry('Alpha1_entry', row=3, column=1)
+        self.app.setSticky('e')
+        self.app.addLabel('Alpha2 (Influence Factor)', row=4, column=0)
+        self.app.setSticky('w')
+        self.app.addEntry('Alpha2_entry', row=4, column=1)
+        self.app.setSticky('e')
+        self.app.addLabel('Alpha3 (Date)', row=5, column=0)
+        self.app.setSticky('w')
+        self.app.addEntry('Alpha3_entry', row=5, column=1)
+        self.app.setSticky('n')
+        self.app.addButton('OK!', self.press, row=6, colspan=2)
 
     def merge_searches(self):
         self.app.setStretch('both')
@@ -149,9 +164,9 @@ class GUI:
         self.crawler.start_search()
 
     def get_alphas_and_start(self):
-        self.alpha1 = int(self.app.getEntry('Alpha1'))
-        self.alpha2 = int(self.app.getEntry('Alpha2'))
-        self.alpha3 = int(self.app.getEntry('Alpha3'))
+        self.alpha1 = int(self.app.getEntry('Alpha1_entry'))
+        self.alpha2 = int(self.app.getEntry('Alpha2_entry'))
+        self.alpha3 = int(self.app.getEntry('Alpha3_entry'))
         self.app.thread(self.crawler.saves_excel(self.app.getRadioButton('Save_option_radioButton')))
         self.app.destroySubWindow('Alphas')
 
