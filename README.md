@@ -12,21 +12,22 @@ This program can run in **Windows, Linux and MacOS**.
 
 
 #Searching
-To perform your first search, click on the Button ￿"New Search￿"
+
+To perform your first search, click on the Button ￿"New Search"
 
 ![Print](SupportImages/Initial_Page.png)
 
 Enter your search phrase in the field (1). Select how many pages you would like to gather in the field (2) and 
-press ￿"Next￿" (3).
+press "Next" (3).
 
 ![Print](SupportImages/Search_Page.png)
 
-Start your search by pressing the button ￿"Start Search!￿".
+Start your search by pressing the button "Start Search!".
 
 Your search will be made in the **[Semantic Scholar Website](https://www.semanticscholar.org)**. 
 Each page selected will actually search for 3 pages. The first parameter will be the default search. The second 
-parameter will be with the option ￿"Newer Articles￿" selected in the Semantic Scholar website. The last parameter will 
-be with the ￿"Lit Review￿" option selected. Any duplicated article in the search will be considered only as one.
+parameter will be with the option "Newer Articles" selected in the Semantic Scholar website. The last parameter will 
+be with the "Lit Review" option selected. Any duplicated article in the search will be considered only as one.
 
 ![Print](SupportImages/Progress_Page.png)
 
@@ -39,7 +40,7 @@ were gathered. After that you will be asked about how would you like to save you
 - The forth option orders your search by Newest Articles
 - The last option orders your search by Alpabetical order, using the Article￿'s Title.
 
-After selecting your option, press ￿"Save!￿" and you will be shown a pop up telling your where the Excel file was saved.
+After selecting your option, press "Save!" and you will be shown a pop up telling your where the Excel file was saved.
 
 ![Print](SupportImages/Save_Page.png)
 
@@ -50,12 +51,12 @@ input 1 for all alphas. Do not use decimal number.
 
 # Multiple Searches
 If you￿'d like to merge multiple searches, generating only one ordered Excel File, you can choose
-the ￿"Merge Old Searches￿" button.
+the "Merge Old Searches" button.
 
 ![Print](SupportImages/Initial_Page2.png)
 
-First, click on the ￿"Select Folder￿" button (1). Select the folder in which your search was 
-saved. Repeat this to add all the searches you￿'d like. Then press ￿"Merge Searches￿" (2).
+First, click on the "Select Folder" button (1). Select the folder in which your search was 
+saved. Repeat this to add all the searches you￿'d like. Then press "Merge Searches" (2).
 
 ![Print](SupportImages/Merge_Page.png)
 
