@@ -4,7 +4,9 @@ import os
 
 
 class ExcelExporter:
-    def __init__(self, search):
+    def __init__(self, search, single_or_merge):
+        self.articles_list = []
+        self.authors_list = []
         self.search_parameter = search
         self.ordered_date_articles_list = []
         self.ordered_influence_articles_list = []
@@ -14,18 +16,37 @@ class ExcelExporter:
         self.alpha2 = 1
         self.alpha3 = 1
         self.gui = None
+        self.single_or_merge = single_or_merge
+
+    def set_list(self, articles_list, authors_list):
+        self.articles_list = articles_list
+        self.authors_list = authors_list
 
     def order_type(self, parameter):
-        if parameter == 'Optimized Rating (RECOMMENDED)':
-            self.single_creator(1)
-        elif parameter == "Influence Factor":
-            self.single_creator(2)
-        elif parameter == "Citation Velocity":
-            self.single_creator(3)
-        elif parameter == "Newer Articles":
-            self.single_creator(4)
-        elif parameter == "Alphabetically, by Article's Title":
-            self.single_creator(5)
+        if self.single_or_merge:
+            self.articles_list = self.gui.merger.articles_list
+            self.authors_list = self.gui.merger.authors_list
+            if parameter == 'Optimized Rating (RECOMMENDED)':
+                self.merge_creator(1)
+            elif parameter == "Influence Factor":
+                self.merge_creator(2)
+            elif parameter == "Citation Velocity":
+                self.merge_creator(3)
+            elif parameter == "Newer Articles":
+                self.merge_creator(4)
+            elif parameter == "Alphabetically, by Article's Title":
+                self.merge_creator(5)
+        else:
+            if parameter == 'Optimized Rating (RECOMMENDED)':
+                self.single_creator(1)
+            elif parameter == "Influence Factor":
+                self.single_creator(2)
+            elif parameter == "Citation Velocity":
+                self.single_creator(3)
+            elif parameter == "Newer Articles":
+                self.single_creator(4)
+            elif parameter == "Alphabetically, by Article's Title":
+                self.single_creator(5)
 
     def define_alphas(self):
         self.alpha1 = self.gui.alpha1
@@ -84,11 +105,11 @@ class ExcelExporter:
         else:
             self.ordered_date_articles_list.sort(key=lambda model: model.data_relativa, reverse=True)
 
-    def merge_creator(self, articles_list, authors_list):
+    def merge_creator(self, search_type):
         diretorio_original = os.getcwd()
 
-        os.chdir(diretorio_original + '/Files/Unite/')
-        diretorio_excel = diretorio_original + '/Files/Unite/'
+        os.chdir(diretorio_original + '/Results/Merged Search/')
+        diretorio_excel = diretorio_original + '/Results/Merged Search/'
 
         workbook = xlsxwriter.Workbook(diretorio_excel + 'Merged.xlsx')
 
@@ -105,8 +126,9 @@ class ExcelExporter:
         data = 5
         influencia = 6
         velocidade = 7
-        link = 8
-        bibtex = 9
+        optimized = 8
+        link = 9
+        bibtex = 10
         linha = 0
 
         label_comment = 'Label NUMBER: 1 -> article\n' \
@@ -149,11 +171,28 @@ class ExcelExporter:
         worksheet_artigos.write(linha, velocidade, 'Citation Velocity', primeiraLinha_format)
         worksheet_artigos.write(linha, link, 'Article Link', primeiraLinha_format)
         worksheet_artigos.write(linha, bibtex, 'BibTex', primeiraLinha_format)
+        worksheet_artigos.write(linha, optimized, 'Optimized Factor', primeiraLinha_format)
         linha += 1
+
+        if search_type == 1:
+            self.define_alphas()
+            self.order_optimized(self.articles_list)
+            self.articles_list = self.ordered_optimized_list
+        elif search_type == 2:
+            self.order_articles(self.articles_list, 1)
+            self.articles_list = self.ordered_influence_articles_list
+        elif search_type == 3:
+            self.order_articles(self.articles_list, 2)
+            self.articles_list = self.ordered_velocity_articles_list
+        elif search_type == 4:
+            self.order_articles(self.articles_list, 3)
+            self.articles_list = self.ordered_date_articles_list
+        elif search_type == 5:
+            pass
 
         numeroDoArtigo = 1
 
-        for artigo in articles_list:
+        for artigo in self.articles_list:
             primeiraLinha = linha
             worksheet_artigos.write(linha, indice, str(numeroDoArtigo), one_line_format)
 
@@ -175,6 +214,7 @@ class ExcelExporter:
             worksheet_artigos.write(linha, data, artigo.data, one_line_format)
             worksheet_artigos.write(linha, influencia, artigo.influencia, one_line_format)
             worksheet_artigos.write(linha, velocidade, artigo.velocidade, one_line_format)
+            worksheet_artigos.write(linha, optimized, artigo.total_factor, one_line_format)
             worksheet_artigos.write(linha, link, artigo.link, one_line_format)
             worksheet_artigos.write(linha, bibtex, artigo.bibtex, one_line_format)
             authors = ''
@@ -196,7 +236,7 @@ class ExcelExporter:
         worksheet_autores.write(linha, artigos_autor, 'Related Published Articles', primeiraLinha_format)
         linha += 1
 
-        for autor in authors_list:
+        for autor in self.authors_list:
             primeiraLinha = linha
             worksheet_autores.write(linha, nome_autor, autor.nome, one_line_format)
             worksheet_autores.write(linha, link_autor, autor.link, one_line_format)
@@ -215,11 +255,13 @@ class ExcelExporter:
 
         workbook.close()
 
+        self.gui.show_saved_alert(diretorio_excel)
+
     def single_creator(self, search_type):
         diretorio_original = os.getcwd()
 
-        os.chdir(diretorio_original + '/Files/' + self.search_parameter + '/')
-        diretorio_excel = diretorio_original + '/Files/' + self.search_parameter + '/'
+        os.chdir(diretorio_original + '/Results/' + self.search_parameter + '/')
+        diretorio_excel = diretorio_original + '/Results/' + self.search_parameter + '/'
 
         workbook = xlsxwriter.Workbook(diretorio_excel + self.search_parameter + '.xlsx')
 

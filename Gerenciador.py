@@ -6,7 +6,7 @@ from pathlib import Path
 class Gerenciador:
     def __init__(self, palavraChave):
         self.diretorio_atual = os.getcwd()
-        self.diretorio_files = self.diretorio_atual + '/Files/'
+        self.diretorio_files = self.diretorio_atual + '/Results/'
         self.arquivo_autores = ''
         self.arquivo_artigos = ''
         self.inicializaPrograma(palavraChave)
@@ -45,7 +45,7 @@ class Gerenciador:
         if os.path.exists(self.diretorio_files):
             pass
         else:
-            os.mkdir('Files')
+            os.mkdir('Results')
         diretorio_com_palavra_chave = self.diretorio_files + palavraChave + '/'
         if os.path.exists(diretorio_com_palavra_chave):
             pass
@@ -58,8 +58,6 @@ class Gerenciador:
         caminho_artigos = Path(diretorio_com_palavra_chave + 'Articles.pkl')
         if caminho_artigos.is_file() is False:
             self.inicializaArtigos()
-            print('File Articles.pkl created!')
         if caminho_autores.is_file() is False:
             self.inicializaAutores()
-            print('File Author.pkl created!')
 

@@ -1,4 +1,5 @@
 from appJar import gui
+from UniteArticles import Merger
 
 
 class GUI:
@@ -13,15 +14,20 @@ class GUI:
         self.alpha1 = 1
         self.alpha2 = 1
         self.alpha3 = 1
+        self.folders_text = ''
+        self.folders_list = []
+        self.single_or_merge = False
+        self.merger = None
 
-    def menus_pressed(self):
-        pass
+    def menus_pressed(self, menu):
+        if menu == 'New Search':
+            pass
 
     def menus(self):
-        file_menus = ["Open Search", "Save Search", "-", "Close"]
+        file_menus = ["New Search", "-", "Close"]
         about_menus = ["Help", "About"]
-        self.app.addMenuList("File", file_menus, self.menus_pressed())
-        self.app.addMenuList("About", about_menus, self.menus_pressed())
+        self.app.addMenuList("File", file_menus, self.menus_pressed)
+        self.app.addMenuList("About", about_menus, self.menus_pressed)
 
     def main_search(self):
         self.app.setStretch('column')
@@ -74,6 +80,16 @@ class GUI:
         self.app.setSticky('')
         self.app.addButton('Save!', self.press)
 
+    def option_page(self):
+        self.app.setStretch('column')
+        self.app.addLabel('Label_Option_page', 'What would you like to do?')
+        self.app.addLabel('spacing_label1', '')
+        self.app.addLabel('spacing_label2', '')
+        self.app.setSticky('nsew')
+        self.app.addButton('New Search', self.press)
+        self.app.addLabel('spacing_label3', '')
+        self.app.addButton('Merge Old Searches', self.press)
+
     def alphas_selection(self):
         self.app.addLabel('Label_alphas_info', 'Your search will be saved using the equation below.')
         self.app.addImage('Alphas', 'Images/Alphas_Equation.gif')
@@ -84,10 +100,28 @@ class GUI:
         self.app.addLabelEntry('Alpha3')
         self.app.addButton('OK!', self.press)
 
+    def merge_searches(self):
+        self.app.setStretch('both')
+        self.app.setSticky('n')
+        self.app.addLabel('Label_merge_searches',
+                          'Select the searches directories you would like to merge.', colspan=2)
+        self.app.setStretch('both')
+        self.app.setSticky('nsew')
+        self.app.addMessage('folders_merge', '', colspan=2)
+        self.app.setMessageWidth('folders_merge', 600)
+        self.app.setStretch('')
+        self.app.setSticky('s')
+        self.app.addButton('Select Folder', self.press, row=3, column=0)
+        self.app.addButton('Merge Searches', self.press, row=3, column=1)
+
     def main_page(self):
         self.menus()
 
         self.app.startFrameStack("Pages")
+
+        self.app.startFrame('Initial Option')
+        self.option_page()
+        self.app.stopFrame()
 
         self.app.startFrame('Search Menu')
         self.main_search()
@@ -99,6 +133,10 @@ class GUI:
 
         self.app.startFrame('Saving Options')
         self.save_menu()
+        self.app.stopFrame()
+
+        self.app.startFrame('Merge Searches')
+        self.merge_searches()
         self.app.stopFrame()
 
         self.app.stopFrameStack()
@@ -118,16 +156,17 @@ class GUI:
         self.app.destroySubWindow('Alphas')
 
     def press(self, btn):
-        if btn == "Next1" or btn == "Next2" or btn == "Next3":
+        if btn == "Next1" or btn == "Next2":
             self.search_phrase = self.app.getEntry('Entry_Search')
             self.input_pages = self.app.getScale('Quantity_scale')
             if self.input_pages == 0:
-                self.app.errorBox('Erro!', 'Selecting 0 pages will end up with a empty search!')
+                self.app.errorBox('Error!', 'Selecting 0 pages will end up with a empty search!')
             else:
                 self.app.nextFrame("Pages")
 
         elif btn == "Start Search!":
             self.app.setLabel('progress_bar_label', 'Getting Ready...')
+            self.app.setButtonState('Start Search!', 'disabled')
             self.app.thread(self.create_crawler)
 
         elif btn == 'Save!':
@@ -137,8 +176,25 @@ class GUI:
                 self.alphas_selection()
                 self.app.stopSubWindow()
             else:
-                self.crawler.saves_excel(self.app.getRadioButton('Save_option_radioButton'))
+                self.crawler.saves_excel(self.app.getRadioButton('Save_option_radioButton'), self.single_or_merge)
 
         elif btn == 'OK!':
             self.get_alphas_and_start()
+
+        elif btn == 'New Search':
+            self.app.selectFrame('Pages', 1)
+
+        elif btn == 'Merge Old Searches':
+            self.app.selectFrame('Pages', 4)
+
+        elif btn == 'Select Folder':
+            text = self.app.directoryBox('Select Folder')
+            self.folders_list.append(text)
+            self.folders_text += text + '\n'
+            self.app.setMessage('folders_merge', self.folders_text)
+
+        elif btn == 'Merge Searches':
+            self.single_or_merge = True
+            self.merger = Merger(self.folders_list)
+            self.app.selectFrame('Pages', 3)
 

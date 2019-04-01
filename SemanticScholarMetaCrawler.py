@@ -359,7 +359,7 @@ class Crawler:
     def saves_excel(self, parameter):
         # creates the excel file
         os.chdir(self.current_directory)
-        excelExporter = ExcelExporter.ExcelExporter(self.input_search)
+        excelExporter = ExcelExporter.ExcelExporter(self.input_search, self.gui.single_or_merge)
         excelExporter.gui = self.gui
         excelExporter.order_type(parameter)
 

@@ -1,11 +1,19 @@
 from GUI import GUI
 from SemanticScholarMetaCrawler import Crawler
 
-# start Crawler
-crawler = Crawler()
 
-# start GUI
-gui = GUI()
-gui.crawler = crawler
-crawler.gui = gui
-gui.main_page()
+class Main:
+    def __init__(self):
+        # start Crawler
+        self.crawler = Crawler()
+
+        # start GUI
+        self.gui = GUI()
+        self.gui.crawler = self.crawler
+        self.crawler.gui = self.gui
+        self.gui.main_page()
+
+
+
+main = Main()
+
