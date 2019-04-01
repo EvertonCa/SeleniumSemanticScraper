@@ -76,7 +76,7 @@ class GUI:
 
     def alphas_selection(self):
         self.app.addLabel('Label_alphas_info', 'Your search will be saved using the equation below.')
-        self.app.addImage('Alphas', 'Images/Alphas Equation.gif')
+        self.app.addImage('Alphas', 'Images/Alphas_Equation.gif')
         self.app.addLabel('Label_alphas_options',
                           'Enter the desired Alphas for your search. (For a basic order, enter 1 for all alphas)')
         self.app.addLabelEntry('Alpha1')

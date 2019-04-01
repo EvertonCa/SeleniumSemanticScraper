@@ -261,6 +261,7 @@ class Crawler:
                         influence = item.find_element_by_xpath(
                             ".//li[@data-selenium-selector='search-result-influential-citations']").text
                         influence = influence.replace(',', '')
+                        influence = influence.replace('.', '')
                     except:
                         pass
 
@@ -270,6 +271,7 @@ class Crawler:
                         velocity = item.find_element_by_xpath(
                             ".//li[@data-selenium-selector='search-result-citation-velocity']").text
                         velocity = velocity.replace(',', '')
+                        velocity = velocity.replace('.', '')
                     except:
                         pass
 
