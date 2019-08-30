@@ -25,6 +25,28 @@ class Merger:
         self.articles_list = []
         self.authors_list = []
 
+        # repeated_article = False
+        # if len(self.list_articles) == 0:
+        #     self.list_articles.append(new_article)
+        # else:
+        #     created = False
+        #     for i in self.list_articles:
+        #         if new_article.link == i.link and new_article.titulo == i.titulo:
+        #             repeated_article = True
+        #             break
+        #         if new_article.titulo[0] < i.titulo[0]:
+        #             self.list_articles.append(new_article)
+        #             self.list_articles.sort()
+        #             created = True
+        #             break
+        #     if created is False and repeated_article is False:
+        #         self.list_articles.append(new_article)
+        #         self.list_articles.sort()
+        #
+        # if repeated_article is False:
+        #     for autorTemp in list_authors_in_article:
+        #         autorTemp.addArtigo(new_article)
+
         for i in folder_list:
             file_name_article = i + '/Articles.pkl'
             file_name_author = i + '/Authors.pkl'

@@ -94,7 +94,7 @@ class Crawler:
             # waits for the page to load, searching for the Field of Study filter to be enabled
             try:
                 waitelement = WebDriverWait(driver, 20). \
-                    until(EC.presence_of_element_located((By.XPATH, "//select[@aria-label='Field of study filter']")))
+                    until(EC.presence_of_element_located((By.XPATH, "//input[@aria-label='Search text']")))
             except TimeoutError:
                 print("~~~~ PAGE DID NOT LOAD! ~~~~")
 

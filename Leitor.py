@@ -6,7 +6,7 @@ gerenciador = Gerenciador.Gerenciador(search)
 lista_autores = gerenciador.loadAutores()
 lista_artigos = gerenciador.loadArtigos()
 
-leitor = ExcelExporter.ExcelExporter(search)
+leitor = ExcelExporter.ExcelExporter(search, True)
 print('Done')
 
 
