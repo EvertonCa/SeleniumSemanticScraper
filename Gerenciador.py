@@ -4,9 +4,9 @@ from pathlib import Path
 
 
 class Gerenciador:
-    def __init__(self, palavraChave):
-        self.diretorio_atual = os.getcwd()
-        self.diretorio_files = self.diretorio_atual + '/Results/'
+    def __init__(self, palavraChave, root_directory):
+        self.root_directory = root_directory
+        self.diretorio_files = self.root_directory + '/Results/'
         self.arquivo_autores = ''
         self.arquivo_artigos = ''
         self.inicializaPrograma(palavraChave)

@@ -15,7 +15,7 @@ import Timer
 
 
 class Crawler:
-    def __init__(self):
+    def __init__(self, root_directory):
         # increase the recursion limit to handle very large searches
         sys.setrecursionlimit(5000)
 
@@ -23,18 +23,18 @@ class Crawler:
         self.options = Options()
 
         # saves current directory in a string
-        self.current_directory = os.getcwd()
+        self.root_directory = root_directory
 
         # saves current platform in a string
         self.current_platform = platform.system()
 
         self.directory_chromedriver = ''
         if self.current_platform == 'Darwin':
-            self.directory_chromedriver = self.current_directory + '/ChromeDriver/ChromeDriverMac'
+            self.directory_chromedriver = self.root_directory + '/ChromeDriver/ChromeDriverMac'
         elif self.current_platform == 'Windows':
-            self.directory_chromedriver = self.current_directory + '/ChromeDriver/ChromeDriverWin.exe'
+            self.directory_chromedriver = self.root_directory + '/ChromeDriver/ChromeDriverWin.exe'
         else:
-            self.directory_chromedriver = self.current_directory + '/ChromeDriver/ChromeDriverLin'
+            self.directory_chromedriver = self.root_directory + '/ChromeDriver/ChromeDriverLin'
 
         # sets Chrome to run Headless (without showing the navigator window while running)
         self.options.add_argument('--headless')
@@ -69,7 +69,7 @@ class Crawler:
         self.start_time = Timer.timeNow()
 
         # loads files for the inputted search if they exist, otherwise, the files are created
-        self.manager = Gerenciador.Gerenciador(self.input_search)
+        self.manager = Gerenciador.Gerenciador(self.input_search, self.root_directory)
         self.list_authors = self.manager.loadAutores()
         self.list_articles = self.manager.loadArtigos()
 
@@ -358,7 +358,7 @@ class Crawler:
 
     def saves_excel(self, parameter):
         # creates the excel file
-        os.chdir(self.current_directory)
+        os.chdir(self.root_directory)
         excelExporter = ExcelExporter.ExcelExporter(self.input_search, self.gui.single_or_merge)
         excelExporter.gui = self.gui
         excelExporter.order_type(parameter)
