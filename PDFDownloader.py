@@ -27,7 +27,6 @@ class PDFDownloader:
 
     def download_file(self, url, pdf_directory, name):
         local_filename = name + '.pdf'
-        print('Downloading ' + local_filename + '\n')
         # NOTE the stream=True parameter below
         with requests.get(url, stream=True) as r:
             r.raise_for_status()

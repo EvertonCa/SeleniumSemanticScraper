@@ -230,6 +230,7 @@ class GUI:
         elif btn == "Start Downloads!":
             self.app.setLabel('progress_bar_2_label', 'Getting Ready...')
             self.app.setButtonState('Start Downloads!', 'disabled')
+            self.app.setButtonState('Skip_download', 'disabled')
             self.app.thread(self.start_downloads)
 
         elif btn == 'Save!':
