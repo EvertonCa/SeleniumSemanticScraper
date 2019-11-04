@@ -249,7 +249,7 @@ class GUI:
             self.app.selectFrame('Pages', 1)
 
         elif btn == 'Merge Old Searches':
-            self.app.selectFrame('Pages', 4)
+            self.app.selectFrame('Pages', 5)
 
         elif btn == 'Select Folder':
             text = self.app.directoryBox('Select Folder')
@@ -260,5 +260,5 @@ class GUI:
         elif btn == 'Merge Searches':
             self.single_or_merge = True
             self.merger = Merger(self.folders_list)
-            self.app.selectFrame('Pages', 3)
+            self.app.selectFrame('Pages', 4)
 

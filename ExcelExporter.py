@@ -4,7 +4,8 @@ import os
 
 
 class ExcelExporter:
-    def __init__(self, search, single_or_merge):
+    def __init__(self, search, single_or_merge, root_directory):
+        self.root_directory = root_directory
         self.articles_list = []
         self.authors_list = []
         self.search_parameter = search
@@ -326,7 +327,7 @@ class ExcelExporter:
         worksheet_artigos.write(linha, optimized, 'Optimized Factor', primeiraLinha_format)
         linha += 1
 
-        gerenciador = Gerenciador.Gerenciador(self.search_parameter)
+        gerenciador = Gerenciador.Gerenciador(self.search_parameter, self.root_directory)
         listaDeArtigos = gerenciador.loadArtigos()
         listaDeAutores = gerenciador.loadAutores()
 

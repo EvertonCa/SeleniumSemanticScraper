@@ -56,7 +56,7 @@ class PDFDownloader:
         self.gui.show_download_done_alert(Timer.totalTime(start_time, end_time), str(self.downloaded_files_quant))
 
     def start(self):
-        self.gui.app.queueFunction(self.gui.app.setLabel, 'progress_bar_2_label', 'Downloading Available PDFs Files ')
+        self.gui.app.queueFunction(self.gui.app.setLabel, 'progress_bar_2_label', 'Downloading available .pdf files')
         self.gui.app.queueFunction(self.gui.app.setMeter, 'progress_bar2', 0)
 
         self.iterate_articles()
