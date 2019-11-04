@@ -1,29 +1,30 @@
 import os
 import requests
+from Gerenciador import Gerenciador
 
 
 class PDFDownloader:
-    def __init__(self, search, link, current_directory):
+    def __init__(self, search, current_directory):
         self.search = search
-        self.link = link
-        self.current_directory = current_directory
+        self.root_directory = current_directory
+        self.manager = Gerenciador(self.search)
+        self.list_articles = self.manager.loadArtigos()
 
         # saves pdf download directory
-        self.pdf_directory = self.current_directory + '/Results/' + self.search + '/PDFs'
+        self.pdf_directory = self.root_directory + '/Results/' + self.search + '/PDFs'
 
-        os.chdir(self.current_directory + '/Results/' + self.search)
+        os.chdir(self.root_directory + '/Results/' + self.search)
 
         if os.path.exists(self.pdf_directory):
             pass
         else:
             os.mkdir('PDFs')
 
-        os.chdir(self.current_directory)
+        os.chdir(self.root_directory)
 
-        self.download_file(self.link, self.pdf_directory)
-
-    def download_file(self, url, pdf_directory):
-        local_filename = 'Teste.pdf'
+    def download_file(self, url, pdf_directory, name):
+        local_filename = name + '.pdf'
+        print('Downloading ' + local_filename + '\n')
         # NOTE the stream=True parameter below
         with requests.get(url, stream=True) as r:
             r.raise_for_status()
@@ -34,6 +35,12 @@ class PDFDownloader:
                         # f.flush()
         return local_filename
 
+    def iterate_articles(self):
+        for article in self.list_articles:
+            name = article.titulo
+            link = article.link
+            if 'pdf' in link:
+                self.download_file(link, self.pdf_directory, name)
+            else:
+                pass
 
-teste = PDFDownloader('neural networks', "https://pdfs.semanticscholar.org/4b80/89bc9b49f84de43acc2eb8900035f7d492b2."
-                                         "pdf?_ga=2.82862294.1789955955.1571429546-391360297.1571429546", os.getcwd())
