@@ -30,11 +30,11 @@ class Crawler:
 
         self.directory_chromedriver = ''
         if self.current_platform == 'Darwin':
-            self.directory_chromedriver = self.root_directory + '/ChromeDriver/ChromeDriverMac'
+            self.directory_chromedriver = os.path.join(self.root_directory, 'ChromeDriver', 'ChromeDriverMac')
         elif self.current_platform == 'Windows':
-            self.directory_chromedriver = self.root_directory + '/ChromeDriver/ChromeDriverWin.exe'
+            self.directory_chromedriver = os.path.join(self.root_directory, 'ChromeDriver', 'ChromeDriverWin.exe')
         else:
-            self.directory_chromedriver = self.root_directory + '/ChromeDriver/ChromeDriverLin'
+            self.directory_chromedriver = os.path.join(self.root_directory, 'ChromeDriver', 'ChromeDriverLin')
 
         # sets Chrome to run Headless (without showing the navigator window while running)
         self.options.add_argument('--headless')

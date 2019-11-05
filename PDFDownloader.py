@@ -14,9 +14,9 @@ class PDFDownloader:
         self.downloaded_files_quant = 0
 
         # saves pdf download directory
-        self.pdf_directory = self.root_directory + '/Results/' + self.search + '/PDFs'
+        self.pdf_directory = os.path.join(self.root_directory, 'Results', self.search, 'PDFs')
 
-        os.chdir(self.root_directory + '/Results/' + self.search)
+        os.chdir(os.path.join(self.root_directory, 'Results', self.search))
 
         if os.path.exists(self.pdf_directory):
             pass
@@ -25,12 +25,12 @@ class PDFDownloader:
 
         os.chdir(self.root_directory)
 
-    def download_file(self, url, pdf_directory, name):
+    def download_file(self, url, name):
         local_filename = name + '.pdf'
         # NOTE the stream=True parameter below
-        with requests.get(url, stream=True) as r:
+        with requests.get(url, stream=False) as r:
             r.raise_for_status()
-            with open(pdf_directory + '/' + local_filename, 'wb') as f:
+            with open(os.path.join(self.pdf_directory, local_filename), 'wb') as f:
                 for chunk in r.iter_content(chunk_size=8192):
                     if chunk:  # filter out keep-alive new chunks
                         f.write(chunk)
@@ -47,7 +47,7 @@ class PDFDownloader:
             name = article.titulo
             link = article.link
             if 'pdf' in link:
-                self.download_file(link, self.pdf_directory, name)
+                self.download_file(link, name)
                 self.downloaded_files_quant += 1
             else:
                 pass

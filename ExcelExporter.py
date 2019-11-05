@@ -107,14 +107,12 @@ class ExcelExporter:
             self.ordered_date_articles_list.sort(key=lambda model: model.data_relativa, reverse=True)
 
     def merge_creator(self, search_type):
-        diretorio_original = os.getcwd()
+        os.chdir(os.path.join(self.root_directory, 'Results', 'Merged Search'))
+        diretorio_excel = os.path.join(self.root_directory, 'Results', 'Merged Search')
 
-        os.chdir(diretorio_original + '/Results/Merged Search/')
-        diretorio_excel = diretorio_original + '/Results/Merged Search/'
+        workbook = xlsxwriter.Workbook(os.path.join(diretorio_excel, 'Merged.xlsx'))
 
-        workbook = xlsxwriter.Workbook(diretorio_excel + 'Merged.xlsx')
-
-        os.chdir(diretorio_original)
+        os.chdir(self.root_directory)
 
         worksheet_artigos = workbook.add_worksheet('ARTICLES')
         worksheet_autores = workbook.add_worksheet('AUTHORS')
@@ -259,14 +257,12 @@ class ExcelExporter:
         self.gui.show_saved_alert(diretorio_excel)
 
     def single_creator(self, search_type):
-        diretorio_original = os.getcwd()
+        os.chdir(os.path.join(self.root_directory, 'Results', self.search_parameter))
+        diretorio_excel = os.path.join(self.root_directory, 'Results', self.search_parameter)
 
-        os.chdir(diretorio_original + '/Results/' + self.search_parameter + '/')
-        diretorio_excel = diretorio_original + '/Results/' + self.search_parameter + '/'
+        workbook = xlsxwriter.Workbook(os.path.join(diretorio_excel, self.search_parameter + '.xlsx'))
 
-        workbook = xlsxwriter.Workbook(diretorio_excel + self.search_parameter + '.xlsx')
-
-        os.chdir(diretorio_original)
+        os.chdir(self.root_directory)
 
         worksheet_artigos = workbook.add_worksheet('ARTICLES')
         worksheet_autores = workbook.add_worksheet('AUTHORS')
