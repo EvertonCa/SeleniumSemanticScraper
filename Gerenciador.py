@@ -4,9 +4,9 @@ from pathlib import Path
 
 
 class Gerenciador:
-    def __init__(self, palavraChave):
-        self.diretorio_atual = os.getcwd()
-        self.diretorio_files = self.diretorio_atual + '/Results/'
+    def __init__(self, palavraChave, root_directory):
+        self.root_directory = root_directory
+        self.diretorio_files = os.path.join(self.root_directory, 'Results')
         self.arquivo_autores = ''
         self.arquivo_artigos = ''
         self.inicializaPrograma(palavraChave)
@@ -46,16 +46,16 @@ class Gerenciador:
             pass
         else:
             os.mkdir('Results')
-        diretorio_com_palavra_chave = self.diretorio_files + palavraChave + '/'
+        diretorio_com_palavra_chave = os.path.join(self.diretorio_files, palavraChave)
         if os.path.exists(diretorio_com_palavra_chave):
             pass
         else:
             os.chdir(self.diretorio_files)
             os.mkdir(palavraChave)
-        self.arquivo_autores = diretorio_com_palavra_chave + 'Authors.pkl'
-        self.arquivo_artigos = diretorio_com_palavra_chave + 'Articles.pkl'
-        caminho_autores = Path(diretorio_com_palavra_chave + 'Authors.pkl')
-        caminho_artigos = Path(diretorio_com_palavra_chave + 'Articles.pkl')
+        self.arquivo_autores = os.path.join(diretorio_com_palavra_chave, 'Authors.pkl')
+        self.arquivo_artigos = os.path.join(diretorio_com_palavra_chave, 'Articles.pkl')
+        caminho_autores = Path(self.arquivo_autores)
+        caminho_artigos = Path(self.arquivo_artigos)
         if caminho_artigos.is_file() is False:
             self.inicializaArtigos()
         if caminho_autores.is_file() is False:

@@ -1,6 +1,7 @@
 from appJar import gui
 from UniteArticles import Merger
 from SemanticScholarMetaCrawler import Crawler
+from PDFDownloader import PDFDownloader
 import os
 import sys
 
@@ -12,14 +13,15 @@ def restart_program():
 
 
 class GUI:
-    def __init__(self):
+    def __init__(self, root_directory):
+        self.root_directory = root_directory
         self.app = gui('Semantic Scholar Crawler', '800x400')
         self.app.setGuiPadding(20, 20)
         self.app.setLocation('CENTER')
         self.app.setFont(16)
         self.search_phrase = ''
         self.input_pages = 0
-        self.crawler = Crawler()
+        self.crawler = Crawler(self.root_directory)
         self.alpha1 = 1
         self.alpha2 = 1
         self.alpha3 = 1
@@ -60,6 +62,11 @@ class GUI:
                          quantity + ' articles successfully gathered.')
         self.app.setButtonState('Next2', 'normal')
 
+    def show_download_done_alert(self, time, quantity):
+        self.app.infoBox('DONE', 'Downloads Completed in ' + str(time.seconds) + ' second(s) with ' +
+                         quantity + ' articles successfully downloaded.')
+        self.app.setButtonState('Next3', 'normal')
+
     def show_saved_alert(self, saved_path):
         self.app.infoBox('SAVED', 'Your search is saved at this location ' + saved_path)
 
@@ -77,6 +84,22 @@ class GUI:
         self.app.setSticky('se')
         self.app.addNamedButton('Next', 'Next2', self.press)
         self.app.setButtonState('Next2', 'disabled')
+
+    def progress_bar2(self):
+        self.app.setStretch('column')
+        self.app.setSticky('nwe')
+        self.app.addLabel('progress_bar_2_label', 'Press "Start Downloads!"')
+        self.app.setStretch('both')
+        self.app.setSticky('nswe')
+        self.app.addMeter('progress_bar2', column=0, row=1)
+        self.app.setMeterFill('progress_bar2', 'gray')
+        self.app.setSticky('')
+        self.app.addButton('Start Downloads!', self.press, column=0, row=2)
+        self.app.setStretch('both')
+        self.app.setSticky('se')
+        self.app.addNamedButton('Skip', 'Skip_download', self.press, row=3)
+        self.app.addNamedButton('Next', 'Next3', self.press, row=4)
+        self.app.setButtonState('Next3', 'disabled')
 
     def save_menu(self):
         self.app.setStretch('column')
@@ -152,6 +175,10 @@ class GUI:
         self.progress_bar()
         self.app.stopFrame()
 
+        self.app.startFrame('Downloading Progress')
+        self.progress_bar2()
+        self.app.stopFrame()
+
         self.app.startFrame('Saving Options')
         self.save_menu()
         self.app.stopFrame()
@@ -169,6 +196,10 @@ class GUI:
         self.crawler.update_search_parameters(self.search_phrase, self.input_pages)
         self.crawler.start_search()
 
+    def start_downloads(self):
+        downloader = PDFDownloader(self.search_phrase, self.root_directory, self)
+        downloader.start()
+
     def get_alphas_and_start(self):
         self.alpha1 = int(self.app.getEntry('Alpha1_entry'))
         self.alpha2 = int(self.app.getEntry('Alpha2_entry'))
@@ -185,10 +216,22 @@ class GUI:
             else:
                 self.app.nextFrame("Pages")
 
+        elif btn == 'Next3':
+            self.app.nextFrame("Pages")
+
+        elif btn == 'Skip_download':
+            self.app.nextFrame("Pages")
+
         elif btn == "Start Search!":
             self.app.setLabel('progress_bar_label', 'Getting Ready...')
             self.app.setButtonState('Start Search!', 'disabled')
             self.app.thread(self.create_crawler)
+
+        elif btn == "Start Downloads!":
+            self.app.setLabel('progress_bar_2_label', 'Getting Ready...')
+            self.app.setButtonState('Start Downloads!', 'disabled')
+            self.app.setButtonState('Skip_download', 'disabled')
+            self.app.thread(self.start_downloads)
 
         elif btn == 'Save!':
             if self.app.getRadioButton('Save_option_radioButton') == "Optimized Rating (RECOMMENDED)":
@@ -206,7 +249,7 @@ class GUI:
             self.app.selectFrame('Pages', 1)
 
         elif btn == 'Merge Old Searches':
-            self.app.selectFrame('Pages', 4)
+            self.app.selectFrame('Pages', 5)
 
         elif btn == 'Select Folder':
             text = self.app.directoryBox('Select Folder')
@@ -217,5 +260,5 @@ class GUI:
         elif btn == 'Merge Searches':
             self.single_or_merge = True
             self.merger = Merger(self.folders_list)
-            self.app.selectFrame('Pages', 3)
+            self.app.selectFrame('Pages', 4)
 
