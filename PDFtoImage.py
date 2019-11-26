@@ -19,7 +19,6 @@ class PDFtoImage:
         self.convert_all(self.all_pdfs_names)
 
         self.folder_names()
-        # self.clean_folders()
 
     # convert all pdfs in the /PDFs folder to images in the /Images/~NAME~ folder
     def convert_all(self, all_pdfs_names):

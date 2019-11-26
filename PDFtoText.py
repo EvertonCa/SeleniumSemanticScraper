@@ -17,8 +17,9 @@ class PDFtoText:
             os.mkdir('Temp_Images')
 
         pdf_to_image = PDFtoImage(self.root_directory, self.pdfs_directory, self.temp_images_directory)
-        image_to_text = ImageToText(pdf_to_image.all_pdfs_names, self.root_directory, self.pdfs_directory,
-                                    self.temp_images_directory)
+        ImageToText(pdf_to_image.all_pdfs_names, self.root_directory, self.pdfs_directory, self.temp_images_directory)
+
+        pdf_to_image.clean_folders()
 
 
 
