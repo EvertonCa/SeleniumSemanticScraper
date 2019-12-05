@@ -6,6 +6,46 @@ from multiprocessing import cpu_count
 from tqdm import tqdm
 
 
+class PDFParameter:
+    def __init__(self, root_directory, images_directory, pdfs_directory, pdf_name):
+        self.root_directory = root_directory
+        self.images_directory = images_directory
+        self.pdfs_directory = pdfs_directory
+        self.pdf_name = pdf_name
+
+
+def convert_all_multithread(all_pdfs_names, root_directory, images_directory, pdfs_directory):
+    all_pdfs_parameters = []
+    for pdf in all_pdfs_names:
+        pdf_parameter = PDFParameter(root_directory, images_directory, pdfs_directory, pdf)
+        all_pdfs_parameters.append(pdf_parameter)
+    with Pool(cpu_count()) as p:
+        r = list(tqdm(p.imap(convert_one, all_pdfs_parameters), total=len(all_pdfs_parameters)))
+
+
+# convert one pdf to image
+def convert_one(pdf_parameter):
+    os.chdir(pdf_parameter.images_directory)
+    with tempfile.TemporaryDirectory() as path:
+        images_from_path = convert_from_path(os.path.join(pdf_parameter.pdfs_directory, pdf_parameter.pdf_name), output_folder=path)
+        temp_index = 1
+
+        folder_name = pdf_parameter.pdf_name[:-4]
+
+        if os.path.exists(os.path.join(pdf_parameter.images_directory, folder_name)):
+            pass
+        else:
+            os.mkdir(folder_name)
+
+        os.chdir(os.path.join(pdf_parameter.images_directory, folder_name))
+
+        for page in images_from_path:
+            page.save('Page' + str(temp_index) + '.jpg', 'JPEG')
+            temp_index += 1
+
+    os.chdir(pdf_parameter.root_directory)
+
+
 class PDFtoImage:
     def __init__(self, root_directory, pdfs_directory, images_directory):
         self.root_directory = root_directory
@@ -24,32 +64,9 @@ class PDFtoImage:
     def convert_all(self, all_pdfs_names):
         os.chdir(self.images_directory)
         print('~~~~~~ CONVERTING FILES TO IMAGE ~~~~~~')
-        with Pool(cpu_count()) as p:
-            r = list(tqdm(p.imap(self.convert_one, all_pdfs_names), total=len(all_pdfs_names)))
+        convert_all_multithread(all_pdfs_names, self.root_directory, self.images_directory, self.pdfs_directory)
         os.chdir(self.root_directory)
         print('')
-
-    # convert one pdf to image
-    def convert_one(self, pdf_name):
-        os.chdir(self.images_directory)
-        with tempfile.TemporaryDirectory() as path:
-            images_from_path = convert_from_path(os.path.join(self.pdfs_directory, pdf_name), output_folder=path)
-            temp_index = 1
-
-            folder_name = pdf_name[:-4]
-
-            if os.path.exists(os.path.join(self.images_directory, folder_name)):
-                pass
-            else:
-                os.mkdir(folder_name)
-
-            os.chdir(os.path.join(self.images_directory, folder_name))
-
-            for page in images_from_path:
-                page.save('Page' + str(temp_index) + '.jpg', 'JPEG')
-                temp_index += 1
-
-        os.chdir(self.root_directory)
 
     # return all the pdfs names in a list
     def pdf_files_names(self):

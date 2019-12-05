@@ -1,6 +1,7 @@
 import os
 from PDFtoImage import PDFtoImage
 from ImageToText import ImageToText
+import pickle
 
 
 class PDFtoText:
@@ -17,10 +18,17 @@ class PDFtoText:
             os.mkdir('Temp_Images')
 
         pdf_to_image = PDFtoImage(self.root_directory, self.pdfs_directory, self.temp_images_directory)
-        ImageToText(pdf_to_image.all_pdfs_names, self.root_directory, self.pdfs_directory, self.temp_images_directory)
 
-        pdf_to_image.clean_folders()
+        with open(os.path.join(self.pdfs_directory, 'Results_pdfs_to_images.pkl'), 'wb') as file_output:
+            pickle.dump(pdf_to_image, file_output, -1)
+
+        # with open(os.path.join(self.pdfs_directory, 'Results_pdfs_to_images.pkl'), 'rb') as file_input:
+        #     saved_pdf_to_image = pickle.load(file_input)
+        #
+        # ImageToText(saved_pdf_to_image.all_pdfs_names, self.root_directory, self.pdfs_directory, self.temp_images_directory)
+
+        # saved_pdf_to_image.clean_folders()
 
 
-
-temp = PDFtoText(os.getcwd(), os.path.join(os.getcwd(), 'Results/Neural Networks/PDFs'))
+if __name__ == "__main__":
+    temp = PDFtoText(os.getcwd(), os.path.join(os.getcwd(), 'Results/Neural Networks/PDFs'))
