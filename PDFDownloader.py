@@ -28,7 +28,7 @@ class PDFDownloader:
     def download_file(self, url, name):
         local_filename = name + '.pdf'
         local_filename = local_filename.replace(':', '-').replace('"', '').replace(';', '-').replace('/', '-').\
-            replace('\\', '-')
+            replace('\\', '-').replace('?', '').replace('!', '')
         # NOTE the stream=True parameter below
         with requests.get(url, stream=False) as r:
             r.raise_for_status()

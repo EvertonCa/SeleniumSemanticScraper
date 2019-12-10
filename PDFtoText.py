@@ -40,5 +40,5 @@ class PDFtoText:
 
 
 if __name__ == "__main__":
-    temp = PDFtoText(os.getcwd(), os.path.join(os.getcwd(), 'Results/Neural Networks/PDFs'))
+    temp = PDFtoText(os.getcwd(), os.path.join(os.getcwd(), 'Results', 'Neural Networks', 'PDFs'))
     temp.convert_total()

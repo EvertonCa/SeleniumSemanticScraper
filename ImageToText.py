@@ -32,10 +32,12 @@ def convert_all_multithread(all_pdfs_names, root_directory, images_directory, pd
     # tesseract has a cap of 4 threads per instance.
     if cpu_threads >= 4:
         divisions = int(cpu_threads / 4)
-        cpu_threads = cpu_threads / divisions
+        cpu_pools = int(cpu_threads / divisions)
+    else:
+        cpu_pools = 1
 
     # start converting using all threads available
-    with Pool(cpu_threads) as p:
+    with Pool(cpu_pools) as p:
         r = p.map(convert_one, all_pdfs_parameters)
 
     print("Total time image to text = " + str(Timer.totalTime(start_timer, Timer.timeNow())))
