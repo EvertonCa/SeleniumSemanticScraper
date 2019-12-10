@@ -2,8 +2,7 @@ from pdf2image import convert_from_path
 import tempfile
 import os
 from multiprocessing import Pool
-from multiprocessing import cpu_count
-from tqdm import tqdm
+import Timer
 
 
 class PDFParameter:
@@ -14,20 +13,31 @@ class PDFParameter:
         self.pdf_name = pdf_name
 
 
+# creates the list with PDFParameter objects and passes it to the function convert_one using multiprocessing
 def convert_all_multithread(all_pdfs_names, root_directory, images_directory, pdfs_directory):
     all_pdfs_parameters = []
     for pdf in all_pdfs_names:
         pdf_parameter = PDFParameter(root_directory, images_directory, pdfs_directory, pdf)
         all_pdfs_parameters.append(pdf_parameter)
-    with Pool(cpu_count()) as p:
-        r = list(tqdm(p.imap(convert_one, all_pdfs_parameters), total=len(all_pdfs_parameters)))
+
+    start_timer = Timer.timeNow()
+    print(start_timer)
+
+    # more than 4 threads will end up in i/o bottleneck (even with NVME SSD)
+    with Pool(4) as pool:
+        r = pool.map(convert_one, all_pdfs_parameters)
+
+    print("Total time PDF to image = " + str(Timer.totalTime(start_timer, Timer.timeNow())))
 
 
 # convert one pdf to image
 def convert_one(pdf_parameter):
     os.chdir(pdf_parameter.images_directory)
+
+    # uses temporary folder to avoid filling up the RAM when converting several pdfs at a time.
     with tempfile.TemporaryDirectory() as path:
-        images_from_path = convert_from_path(os.path.join(pdf_parameter.pdfs_directory, pdf_parameter.pdf_name), output_folder=path)
+        images_from_path = convert_from_path(os.path.join(pdf_parameter.pdfs_directory, pdf_parameter.pdf_name),
+                                             output_folder=path)
         temp_index = 1
 
         folder_name = pdf_parameter.pdf_name[:-4]
@@ -44,6 +54,7 @@ def convert_one(pdf_parameter):
             temp_index += 1
 
     os.chdir(pdf_parameter.root_directory)
+    print("CONVERTED: " + pdf_parameter.pdf_name)
 
 
 class PDFtoImage:
