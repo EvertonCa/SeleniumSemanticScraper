@@ -6,7 +6,9 @@ This program uses TKinter, wrapped with appJar as GUI.
 # Running
 This program can run in **Windows, Linux and MacOS**.
 - Install the latest version of **Python 3** in your system.
-- Make sure you have the following packages installed: **Selenium, xlsxwriter, pickle, TKinter, appJar and pathlib**. This can be done with PIP or any other Python packages manager.
+- Install Google Tesseract (**[How To](https://github.com/tesseract-ocr/tesseract)**)
+- You can install all the required dependencies by navigating via terminal/CMD to the folder where this project was 
+downloaded and running the command: `pip install -r requirements.txt`
 - Make sure you have **Google Chrome** installed (the program will open a headless version of Chrome and make the search on it)
 - Run the file **Main.py** with the command `python Main.py` on your terminal or cmd.
 
@@ -32,7 +34,12 @@ be with the "Lit Review" option selected. Any duplicated article in the search w
 ![Print](SupportImages/Progress_Page.png)
 
 When your search is complete, a pop will show up, informing the time it took to make the search and how many articles
-were gathered. After that you will be asked about how would you like to save your search.
+were gathered.
+
+You will then be asked if you'd like to download all the available PDFs from your search. You can skip this part by 
+pressing the "Skip" button. Otherwise, just click "Start Downloads!". When the downloads are done, you can click "Next".
+
+After that you will be asked about how would you like to save your search.
 
 - The first option uses an optimized algorithm for ordering your search
 - The second option orders your search by Influence Factor
