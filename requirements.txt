@@ -1,0 +1,11 @@
+appJar==0.94.0
+certifi==2019.11.28
+chardet==3.0.4
+idna==2.8
+pdf2image==1.10.0
+Pillow==6.2.1
+pytesseract==0.3.0
+requests==2.22.0
+selenium==3.141.0
+urllib3==1.25.7
+XlsxWriter==1.2.6
