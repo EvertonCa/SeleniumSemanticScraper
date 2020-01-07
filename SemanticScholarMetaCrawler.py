@@ -137,6 +137,7 @@ class Crawler:
 
             # runs the code for the amount of pages desired
             self.index_progress_bar = 1
+            self.list_articles = set(self.list_articles)
             for pag in range(0, self.input_pages):
                 # progress bar
                 self.gui.app.queueFunction(self.gui.app.setMeter, 'progress_bar',
@@ -309,33 +310,15 @@ class Crawler:
                     new_article = Artigo.Artigo(title, list_authors_in_article, origin, date,
                                                 influence, velocity, link, cite, bibtex)
 
-                    # checks if the article already exists, and if not, adds it to the articles list
-                    repeated_article = False
-                    if len(self.list_articles) == 0:
-                        self.list_articles.append(new_article)
-                    else:
-                        created = False
-                        for i in self.list_articles:
-                            if new_article.link == i.link and new_article.titulo == i.titulo:
-                                repeated_article = True
-                                break
-                            if new_article.titulo[0] < i.titulo[0]:
-                                self.list_articles.append(new_article)
-                                self.list_articles.sort()
-                                created = True
-                                break
-                        if created is False and repeated_article is False:
-                            self.list_articles.append(new_article)
-                            self.list_articles.sort()
+                    # adds new article to set list (set list does not allow duplicates)
+                    before = len(self.list_articles)
+                    self.list_articles.add(new_article)
+                    after = len(self.list_articles)
 
-                    if repeated_article is False:
+                    # add article to the author's article list if the article is not repeated
+                    if before is not after:
                         for autorTemp in list_authors_in_article:
                             autorTemp.addArtigo(new_article)
-
-                    # feedback to user
-                    # print('Article ' + title + " obtained with success.")
-
-                # print('~~~~ PAGE ' + str(pag+1) + ' COMPLETED SUCCESSFULLY ~~~~')
 
                 # tries to go to the next page, if exists
                 try:
@@ -346,6 +329,9 @@ class Crawler:
                     break
 
         self.end_time = Timer.timeNow()
+
+        # converts set to list, to be able to sort it after
+        self.list_articles = list(self.list_articles)
 
         # closes the Google Chrome
         driver.quit()
