@@ -34,10 +34,13 @@ class Artigo:
             return NotImplemented
 
     def __eq__(self, other):
-        return self.titulo == other
+        return hash((self.titulo, self.link)) == hash((other.titulo, other.link))
 
     def __ne__(self, other):
         return self.titulo != other
 
     def __gt__(self, other):
         return self.titulo > other
+
+    def __hash__(self):
+        return hash((self.titulo, self.link))
