@@ -172,75 +172,43 @@ class Crawler:
                     except:
                         pass
 
-                    # creates a list of the authors for the article
-                    list_authors_in_article = []
+                    # creates a set list of the authors for the article
+                    list_authors_in_article = set()
+
+                    self.list_authors = set(self.list_authors)
 
                     # iterates over each author in the list with html link
                     for temp in list_authors_html_link:
                         # saves the author name as a string
                         author = temp.text
+
                         # saves the author page html link as a string
                         link = temp.get_attribute('href')
-                        # checks it the author already exists and if not, creates it and adds it to the authors list
-                        if len(self.list_authors) == 0:
-                            temp = Autor.Autor(author, link)
-                            list_authors_in_article.append(temp)
-                            self.list_authors.append(temp)
-                        else:
-                            created = False
-                            for i in self.list_authors:
-                                if author == i.nome:
-                                    list_authors_in_article.append(i)
-                                    list_authors_in_article.sort()
-                                    created = True
-                                    break
-                                if author[0] < i.nome[0]:
-                                    temp = Autor.Autor(author, link)
-                                    list_authors_in_article.append(temp)
-                                    list_authors_in_article.sort()
-                                    self.list_authors.append(temp)
-                                    self.list_authors.sort()
-                                    created = True
-                                    break
-                            if created is False:
-                                temp = Autor.Autor(author, link)
-                                list_authors_in_article.append(temp)
-                                list_authors_in_article.sort()
-                                self.list_authors.append(temp)
-                                self.list_authors.sort()
+
+                        # creates temporary author
+                        temp = Autor.Autor(author, link)
+
+                        # adds new authors to the set lists
+                        self.list_authors.add(temp)
+                        list_authors_in_article.add(temp)
 
                     # iterates over each author in the list without html link, if the list is not empty
                     if list_authors_without_html_link is not None:
                         for temp in list_authors_without_html_link:
                             # saves the author name as a string
                             author = temp.text
-                            # checks it the author already exists and if not, creates it and adds it to the authors list
-                            if len(self.list_authors) == 0:
-                                temp = Autor.Autor(author, None)
-                                list_authors_in_article.append(temp)
-                                self.list_authors.append(temp)
-                            else:
-                                created = False
-                                for i in self.list_authors:
-                                    if author == i.nome:
-                                        list_authors_in_article.append(i)
-                                        list_authors_in_article.sort()
-                                        created = True
-                                        break
-                                    if author[0] < i.nome[0]:
-                                        temp = Autor.Autor(author, None)
-                                        list_authors_in_article.append(temp)
-                                        list_authors_in_article.sort()
-                                        self.list_authors.append(temp)
-                                        self.list_authors.sort()
-                                        created = True
-                                        break
-                                if created is False:
-                                    temp = Autor.Autor(author, None)
-                                    list_authors_in_article.append(temp)
-                                    list_authors_in_article.sort()
-                                    self.list_authors.append(temp)
-                                    self.list_authors.sort()
+
+                            # creates temporary author
+                            temp = Autor.Autor(author, None)
+
+                            # adds new authors to the set lists
+                            self.list_authors.add(temp)
+                            list_authors_in_article.add(temp)
+
+                    self.list_authors = list(self.list_authors)
+                    self.list_authors.sort()
+                    list_authors_in_article = list(list_authors_in_article)
+                    list_authors_in_article.sort()
 
                     # saves the article origin as a string
                     origin = '-'
