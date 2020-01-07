@@ -28,10 +28,13 @@ class Autor:
             return NotImplemented
 
     def __eq__(self, other):
-        return self.nome == other
+        return hash((self.nome, self.link)) == hash((other.nome, other.link))
 
     def __ne__(self, other):
         return self.nome != other
 
     def __gt__(self, other):
         return self.nome > other
+
+    def __hash__(self):
+        return hash((self.nome, self.link))

@@ -49,7 +49,7 @@ class Crawler:
         self.list_articles = []
 
         self.input_search = ''
-        self.input_pages = ''
+        self.input_pages = 0
 
         self.gui = None
 
@@ -137,6 +137,7 @@ class Crawler:
 
             # runs the code for the amount of pages desired
             self.index_progress_bar = 1
+            self.list_articles = set(self.list_articles)
             for pag in range(0, self.input_pages):
                 # progress bar
                 self.gui.app.queueFunction(self.gui.app.setMeter, 'progress_bar',
@@ -171,75 +172,43 @@ class Crawler:
                     except:
                         pass
 
-                    # creates a list of the authors for the article
-                    list_authors_in_article = []
+                    # creates a set list of the authors for the article
+                    list_authors_in_article = set()
+
+                    self.list_authors = set(self.list_authors)
 
                     # iterates over each author in the list with html link
                     for temp in list_authors_html_link:
                         # saves the author name as a string
                         author = temp.text
+
                         # saves the author page html link as a string
                         link = temp.get_attribute('href')
-                        # checks it the author already exists and if not, creates it and adds it to the authors list
-                        if len(self.list_authors) == 0:
-                            temp = Autor.Autor(author, link)
-                            list_authors_in_article.append(temp)
-                            self.list_authors.append(temp)
-                        else:
-                            created = False
-                            for i in self.list_authors:
-                                if author == i.nome:
-                                    list_authors_in_article.append(i)
-                                    list_authors_in_article.sort()
-                                    created = True
-                                    break
-                                if author[0] < i.nome[0]:
-                                    temp = Autor.Autor(author, link)
-                                    list_authors_in_article.append(temp)
-                                    list_authors_in_article.sort()
-                                    self.list_authors.append(temp)
-                                    self.list_authors.sort()
-                                    created = True
-                                    break
-                            if created is False:
-                                temp = Autor.Autor(author, link)
-                                list_authors_in_article.append(temp)
-                                list_authors_in_article.sort()
-                                self.list_authors.append(temp)
-                                self.list_authors.sort()
+
+                        # creates temporary author
+                        temp = Autor.Autor(author, link)
+
+                        # adds new authors to the set lists
+                        self.list_authors.add(temp)
+                        list_authors_in_article.add(temp)
 
                     # iterates over each author in the list without html link, if the list is not empty
                     if list_authors_without_html_link is not None:
                         for temp in list_authors_without_html_link:
                             # saves the author name as a string
                             author = temp.text
-                            # checks it the author already exists and if not, creates it and adds it to the authors list
-                            if len(self.list_authors) == 0:
-                                temp = Autor.Autor(author, None)
-                                list_authors_in_article.append(temp)
-                                self.list_authors.append(temp)
-                            else:
-                                created = False
-                                for i in self.list_authors:
-                                    if author == i.nome:
-                                        list_authors_in_article.append(i)
-                                        list_authors_in_article.sort()
-                                        created = True
-                                        break
-                                    if author[0] < i.nome[0]:
-                                        temp = Autor.Autor(author, None)
-                                        list_authors_in_article.append(temp)
-                                        list_authors_in_article.sort()
-                                        self.list_authors.append(temp)
-                                        self.list_authors.sort()
-                                        created = True
-                                        break
-                                if created is False:
-                                    temp = Autor.Autor(author, None)
-                                    list_authors_in_article.append(temp)
-                                    list_authors_in_article.sort()
-                                    self.list_authors.append(temp)
-                                    self.list_authors.sort()
+
+                            # creates temporary author
+                            temp = Autor.Autor(author, None)
+
+                            # adds new authors to the set lists
+                            self.list_authors.add(temp)
+                            list_authors_in_article.add(temp)
+
+                    self.list_authors = list(self.list_authors)
+                    self.list_authors.sort()
+                    list_authors_in_article = list(list_authors_in_article)
+                    list_authors_in_article.sort()
 
                     # saves the article origin as a string
                     origin = '-'
@@ -309,33 +278,15 @@ class Crawler:
                     new_article = Artigo.Artigo(title, list_authors_in_article, origin, date,
                                                 influence, velocity, link, cite, bibtex)
 
-                    # checks if the article already exists, and if not, adds it to the articles list
-                    repeated_article = False
-                    if len(self.list_articles) == 0:
-                        self.list_articles.append(new_article)
-                    else:
-                        created = False
-                        for i in self.list_articles:
-                            if new_article.link == i.link and new_article.titulo == i.titulo:
-                                repeated_article = True
-                                break
-                            if new_article.titulo[0] < i.titulo[0]:
-                                self.list_articles.append(new_article)
-                                self.list_articles.sort()
-                                created = True
-                                break
-                        if created is False and repeated_article is False:
-                            self.list_articles.append(new_article)
-                            self.list_articles.sort()
+                    # adds new article to set list (set list does not allow duplicates)
+                    before = len(self.list_articles)
+                    self.list_articles.add(new_article)
+                    after = len(self.list_articles)
 
-                    if repeated_article is False:
+                    # add article to the author's article list if the article is not repeated
+                    if before is not after:
                         for autorTemp in list_authors_in_article:
                             autorTemp.addArtigo(new_article)
-
-                    # feedback to user
-                    # print('Article ' + title + " obtained with success.")
-
-                # print('~~~~ PAGE ' + str(pag+1) + ' COMPLETED SUCCESSFULLY ~~~~')
 
                 # tries to go to the next page, if exists
                 try:
@@ -346,6 +297,9 @@ class Crawler:
                     break
 
         self.end_time = Timer.timeNow()
+
+        # converts set to list, to be able to sort it after
+        self.list_articles = list(self.list_articles)
 
         # closes the Google Chrome
         driver.quit()
