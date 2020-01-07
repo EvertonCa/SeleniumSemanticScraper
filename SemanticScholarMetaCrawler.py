@@ -49,7 +49,7 @@ class Crawler:
         self.list_articles = []
 
         self.input_search = ''
-        self.input_pages = ''
+        self.input_pages = 0
 
         self.gui = None
 
