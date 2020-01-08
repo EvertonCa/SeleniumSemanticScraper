@@ -35,6 +35,12 @@ class GUI:
     def menus_pressed(self, menu):
         if menu == 'New Search':
             restart_program()
+        if menu == "Close":
+            self.app.stop()
+        if menu == "Help":
+            pass
+        if menu == "About":
+            pass
 
     def menus(self):
         file_menus = ["New Search", "-", "Close"]
@@ -68,7 +74,11 @@ class GUI:
         self.app.setButtonState('Next3', 'normal')
 
     def show_saved_alert(self, saved_path):
-        self.app.infoBox('SAVED', 'Your search is saved at this location ' + saved_path)
+        answer = self.app.yesNoBox('SAVED', 'Your search is saved at this location ' + saved_path +
+                                   '.\nWould you like to end the program?')
+        self.app.destroySubWindow('Alphas')
+        if answer:
+            self.app.stop()
 
     def progress_bar(self):
         self.app.setStretch('column')
@@ -77,7 +87,7 @@ class GUI:
         self.app.setStretch('both')
         self.app.setSticky('nswe')
         self.app.addMeter('progress_bar', column=0, row=1)
-        self.app.setMeterFill('progress_bar', 'gray')
+        self.app.setMeterFill('progress_bar', 'blue')
         self.app.setSticky('')
         self.app.addButton('Start Search!', self.press, column=0, row=2)
         self.app.setStretch('both')
@@ -92,7 +102,7 @@ class GUI:
         self.app.setStretch('both')
         self.app.setSticky('nswe')
         self.app.addMeter('progress_bar2', column=0, row=1)
-        self.app.setMeterFill('progress_bar2', 'gray')
+        self.app.setMeterFill('progress_bar2', 'blue')
         self.app.setSticky('')
         self.app.addButton('Start Downloads!', self.press, column=0, row=2)
         self.app.setStretch('both')
@@ -208,7 +218,6 @@ class GUI:
         if self.app.getEntry('Alpha3_entry') != '':
             self.alpha3 = int(self.app.getEntry('Alpha3_entry'))
         self.app.thread(self.crawler.saves_excel(self.app.getRadioButton('Save_option_radioButton')))
-        self.app.destroySubWindow('Alphas')
 
     def press(self, btn):
         if btn == "Next1" or btn == "Next2":
