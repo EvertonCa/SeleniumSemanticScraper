@@ -38,9 +38,15 @@ class GUI:
         if menu == "Close":
             self.app.stop()
         if menu == "Help":
-            pass
+            self.app.startSubWindow('Help', 'Help', True, )
+            self.app.showSubWindow('Help')
+            self.help_screen()
+            self.app.stopSubWindow()
         if menu == "About":
-            pass
+            self.app.startSubWindow('About', 'About this program', True, )
+            self.app.showSubWindow('About')
+            self.about_screen()
+            self.app.stopSubWindow()
 
     def menus(self):
         file_menus = ["New Search", "-", "Close"]
@@ -202,6 +208,15 @@ class GUI:
         self.app.firstFrame('Pages')
         self.app.go()
 
+    def about_screen(self):
+        self.app.addImage('Alphas', 'Images/About.gif')
+        self.app.setSticky('n')
+        self.app.addButton('Close', self.press)
+
+    def help_screen(self):
+        self.app.addWebLink('GitHub link for help!', 'https://github.com/EvertonCa/SeleniumSemanticScraper')
+        self.app.addButton('Close!', self.press)
+
     def create_crawler(self):
         self.crawler.update_search_parameters(self.search_phrase, self.input_pages)
         self.crawler.start_search()
@@ -273,4 +288,10 @@ class GUI:
             self.single_or_merge = True
             self.merger = Merger(self.folders_list)
             self.app.selectFrame('Pages', 4)
+
+        elif btn == 'Close':
+            self.app.destroySubWindow('About')
+
+        elif btn == 'Close!':
+            self.app.destroySubWindow('Help')
 
