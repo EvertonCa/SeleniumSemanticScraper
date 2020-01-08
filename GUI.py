@@ -201,9 +201,12 @@ class GUI:
         downloader.start()
 
     def get_alphas_and_start(self):
-        self.alpha1 = int(self.app.getEntry('Alpha1_entry'))
-        self.alpha2 = int(self.app.getEntry('Alpha2_entry'))
-        self.alpha3 = int(self.app.getEntry('Alpha3_entry'))
+        if self.app.getEntry('Alpha1_entry') != '':
+            self.alpha1 = int(self.app.getEntry('Alpha1_entry'))
+        if self.app.getEntry('Alpha2_entry') != '':
+            self.alpha2 = int(self.app.getEntry('Alpha2_entry'))
+        if self.app.getEntry('Alpha3_entry') != '':
+            self.alpha3 = int(self.app.getEntry('Alpha3_entry'))
         self.app.thread(self.crawler.saves_excel(self.app.getRadioButton('Save_option_radioButton')))
         self.app.destroySubWindow('Alphas')
 

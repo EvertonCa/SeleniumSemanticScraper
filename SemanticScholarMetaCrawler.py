@@ -73,11 +73,6 @@ class Crawler:
         self.list_authors = self.manager.loadAutores()
         self.list_articles = self.manager.loadArtigos()
 
-        # booleans for setting the type of search
-        normal = False
-        lastFiveYears = False
-        litReviews = False
-
         # creates a webdriver instance
         driver = webdriver.Chrome(self.directory_chromedriver, chrome_options=self.options)
 
@@ -118,22 +113,15 @@ class Crawler:
                 print("~~~~ PAGE DID NOT LOAD! ~~~~")
 
             # tests which type of search has been done and sets the correct one
-            if normal is False:
-                normal = True
+            if k == 1:
+                element = driver.find_element_by_xpath(
+                    "//button[@data-selenium-selector='last-five-years-filter-button']")
+                driver.execute_script('arguments[0].click()', element)
+            elif k == 2:
+                element = driver.find_element_by_xpath("//button[@data-selenium-selector='reviews-filter-button']")
+                driver.execute_script('arguments[0].click()', element)
             else:
-                if lastFiveYears is False:
-                    element = driver.find_element_by_xpath(
-                        "//button[@data-selenium-selector='last-five-years-filter-button']")
-                    driver.execute_script('arguments[0].click()', element)
-                    lastFiveYears = True
-                else:
-                    if litReviews is False:
-                        element = driver.find_element_by_xpath(
-                            "//button[@data-selenium-selector='reviews-filter-button']")
-                        driver.execute_script('arguments[0].click()', element)
-                        litReviews = True
-                    else:
-                        pass
+                pass
 
             # runs the code for the amount of pages desired
             self.index_progress_bar = 1
