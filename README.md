@@ -6,7 +6,7 @@ This program uses TKinter, wrapped with appJar as GUI.
 # Running
 This program can run in **Windows, Linux and MacOS**.
 - Install the latest version of **Python 3** in your system.
-- Install Google Tesseract (**[How To](https://github.com/tesseract-ocr/tesseract)**)
+- Install Google Tesseract (**[How To](https://github.com/tesseract-ocr/tesseract)**) (This part is optional for now!)
 - You can install all the required dependencies by navigating via terminal/CMD to the folder where this project was 
 downloaded and running the command: `pip install -r requirements.txt`
 - Make sure you have **Google Chrome** installed (the program will open a headless version of Chrome and make the search on it)
