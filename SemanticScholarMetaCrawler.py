@@ -201,14 +201,14 @@ class Crawler:
                     # saves the article origin as a string
                     origin = '-'
                     try:
-                        origin = item.find_element_by_xpath(".//li[@data-selenium-selector='venue-metadata']").text
+                        origin = item.find_element_by_xpath(".//span[@data-selenium-selector='venue-metadata']").text
                     except:
                         pass
 
                     # saves the article date as a string
                     date = '0'
                     try:
-                        date = item.find_element_by_xpath(".//li[@data-selenium-selector='paper-year']").text
+                        date = item.find_element_by_xpath(".//span[@data-heap-id='paper-year']").text
                     except:
                         pass
 

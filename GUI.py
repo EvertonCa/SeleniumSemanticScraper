@@ -267,7 +267,7 @@ class GUI:
                 self.alphas_selection()
                 self.app.stopSubWindow()
             else:
-                self.crawler.saves_excel(self.app.getRadioButton('Save_option_radioButton'), self.single_or_merge)
+                self.crawler.saves_excel(self.app.getRadioButton('Save_option_radioButton'))
 
         elif btn == 'OK!':
             self.get_alphas_and_start()
