@@ -139,12 +139,15 @@ class GUI:
         self.app.addButton('New Search', self.press)
         self.app.addLabel('spacing_label3', '')
         self.app.addButton('Merge Old Searches', self.press)
+        self.app.addLabel('spacing_label4', '')
+        self.app.addButton('Downloader', self.press)
 
     def alphas_selection(self):
         self.app.addLabel('Label_alphas_info', 'Your search will be saved using the equation below.', colspan=2)
         self.app.addImage('Alphas', 'Images/Alphas_Equation.gif', colspan=2)
         self.app.addLabel('Label_alphas_options',
-                          'Enter the desired Alphas for your search. (For a basic order, enter 1 for all alphas)', colspan=2)
+                          'Enter the desired Alphas for your search. (For a basic order, enter 1 for all alphas)',
+                          colspan=2)
         self.app.setSticky('e')
         self.app.addLabel('Alpha1 (Citation Velocity)', row=3, column=0)
         self.app.setSticky('w')

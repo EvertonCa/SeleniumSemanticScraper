@@ -1,64 +1,135 @@
 import os
-import requests
-from Gerenciador import Gerenciador
+import shutil
 import Timer
+import pandas as pd
+import platform
+import time
+from selenium import webdriver
 
 
 class PDFDownloader:
-    def __init__(self, search, current_directory, gui):
-        self.search = search
+    def __init__(self, current_directory):
         self.root_directory = current_directory
-        self.manager = Gerenciador(self.search, self.root_directory)
-        self.list_articles = self.manager.loadArtigos()
-        self.gui = gui
+        self.list_articles = None
+        #self.gui = gui
         self.downloaded_files_quant = 0
 
         # saves pdf download directory
-        self.pdf_directory = os.path.join(self.root_directory, 'Results', self.search, 'PDFs')
+        self.pdf_directory = os.path.join(self.root_directory, 'Results', 'Merged Search', 'PDFs')
 
-        os.chdir(os.path.join(self.root_directory, 'Results', self.search))
+        self.temp_folder = os.path.join(self.root_directory, 'Results', 'Merged Search', 'Temp')
+
+        os.chdir(os.path.join(self.root_directory, 'Results', 'Merged Search'))
 
         if os.path.exists(self.pdf_directory):
             pass
         else:
             os.mkdir('PDFs')
 
-        os.chdir(self.root_directory)
+        if os.path.exists(self.temp_folder):
+            pass
+        else:
+            os.mkdir('Temp')
 
-    def download_file(self, url, name):
-        local_filename = name + '.pdf'
-        local_filename = local_filename.replace(':', '-').replace('"', '').replace(';', '-').replace('/', '-'). \
-            replace('\\', '-').replace('?', '').replace('!', '')
-        # NOTE the stream=True parameter below
-        with requests.get(url, stream=False) as r:
-            r.raise_for_status()
-            with open(os.path.join(self.pdf_directory, local_filename), 'wb') as f:
-                for chunk in r.iter_content(chunk_size=8192):
-                    if chunk:  # filter out keep-alive new chunks
-                        f.write(chunk)
-                        # f.flush()
-        return local_filename
+        self.current_platform = platform.system()
+        if self.current_platform == 'Darwin':
+            self.directory_chromedriver = os.path.join(self.root_directory, 'ChromeDriver', 'ChromeDriverMac')
+        elif self.current_platform == 'Windows':
+            self.directory_chromedriver = os.path.join(self.root_directory, 'ChromeDriver', 'ChromeDriverWin.exe')
+        else:
+            self.directory_chromedriver = os.path.join(self.root_directory, 'ChromeDriver', 'ChromeDriverLin')
+
+        self.options = webdriver.ChromeOptions()
+
+        self.options.add_experimental_option("prefs", {
+            "download.default_directory": self.temp_folder,
+            "download.prompt_for_download": False,
+            "download.directory_upgrade": True,
+            "plugins.always_open_pdf_externally": True,
+            "safebrowsing.enabled": True
+        })
+        self.driver = webdriver.Chrome(self.directory_chromedriver, options=self.options)
+
+    def rename_and_move(self, old, new):
+        os.rename(os.path.join(self.temp_folder, old), os.path.join(self.temp_folder, new))
+        shutil.move(os.path.join(self.temp_folder, new), os.path.join(self.pdf_directory, new))
+
+    def download_file(self, url):
+        self.driver.get(url)
+
+        if 'pdf' in url:
+            return True
+        else:
+            try:
+                # if the site is IEEE, it can download if in the right network
+                new_link = self.driver.find_element_by_xpath("//iframe[contains(@src,'pdf')]").get_attribute("src")
+                self.driver.get(new_link)
+                return True
+            except:
+                return False
+
+    def check_downloaded(self):
+        name = os.listdir(self.temp_folder)
+        while True:
+            if len(name) == 0:
+                time.sleep(1)
+                name = os.listdir(self.temp_folder)
+            else:
+                break
+        name = name[0]
+        while True:
+            if os.path.exists(os.path.join(self.temp_folder, name)) is False:
+                file_name = os.listdir(self.temp_folder)
+                file_name = file_name[0]
+                return file_name
+            time.sleep(1)
 
     def iterate_articles(self):
         start_time = Timer.timeNow()
         index_progress_bar = 1
-        size_list = len(self.list_articles)
-        for article in self.list_articles:
-            self.gui.app.queueFunction(self.gui.app.setMeter, 'progress_bar2', ((100 * index_progress_bar) / size_list))
-            index_progress_bar += 1
-            name = article.titulo
-            link = article.link
-            if 'pdf' in link:
-                self.download_file(link, name)
-                self.downloaded_files_quant += 1
-            else:
-                pass
 
+        excel = pd.read_excel('Download.xlsx', sheet_name='ARTICLES')
+
+        titles = excel['Title']
+        authors = excel['Authors']
+        links = excel['Article Link']
+        year = excel['Publication Year']
+        size_list = excel['Title'].size
+
+        for temp in titles:
+            file = open('DownloadLog.txt', 'a')
+            #self.gui.app.queueFunction(self.gui.app.setMeter, 'progress_bar2', ((100 * index_progress_bar) / size_list))
+            new_name = str(year[index_progress_bar - 1]) + '-' + (((str(authors[index_progress_bar - 1])
+                            .split(', '))[0]).split(' '))[-1] + '-' + ((str(titles[index_progress_bar - 1])
+                            .replace('A', '').replace('a', '').replace('An', '').replace('an', '').replace('The', '')
+                            .replace('the', '').replace('\'', '').replace('-', ' ')).split(' '))[0]
+            link = str(links[index_progress_bar - 1])
+            index_progress_bar += 1
+
+            resp = self.download_file(link)
+
+            if resp is False:
+                file.write(new_name + 'FAILED TO DOWNLOAD: '
+                           + 'Link: ' + link + '\n')
+            else:
+                old_name = self.check_downloaded()
+                self.downloaded_files_quant += 1
+                self.rename_and_move(old_name, new_name + '.pdf')
+                file.write(str(self.downloaded_files_quant) + ' ' + new_name + 'SUCCESSFULLY DOWNLOADED' + '\n')
+            file.close()
+
+        shutil.rmtree(self.temp_folder)
+        self.driver.quit()
         end_time = Timer.timeNow()
-        self.gui.show_download_done_alert(Timer.totalTime(start_time, end_time), str(self.downloaded_files_quant))
+        #self.gui.show_download_done_alert(Timer.totalTime(start_time, end_time), str(self.downloaded_files_quant))
 
     def start(self):
         self.gui.app.queueFunction(self.gui.app.setLabel, 'progress_bar_2_label', 'Downloading available .pdf files')
         self.gui.app.queueFunction(self.gui.app.setMeter, 'progress_bar2', 0)
 
         self.iterate_articles()
+
+
+if __name__ == "__main__":
+    down = PDFDownloader(os.getcwd())
+    down.iterate_articles()
