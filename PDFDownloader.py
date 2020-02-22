@@ -5,6 +5,9 @@ import pandas as pd
 import platform
 import time
 from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 
 
 class PDFDownloader:
@@ -58,25 +61,66 @@ class PDFDownloader:
         self.driver.get(url)
 
         if 'pdf' in url:
-            return True
+            if self.check_download_started():
+                return True
+            else:
+                return False
         else:
             try:
-                # if the site is IEEE, it can download if in the right network
-                new_link = self.driver.find_element_by_xpath("//iframe[contains(@src,'pdf')]").get_attribute("src")
+                # wait to check it the site is IEEE, then tries to download it
+                waitelement = WebDriverWait(self.driver, 2). \
+                    until(EC.presence_of_element_located((By.XPATH, "//iframe[contains(@src,'ieeexplore')]")))
+
+                new_link = self.driver.find_element_by_xpath("//iframe[contains(@src,'ieeexplore')]").get_attribute("src")
+
                 self.driver.get(new_link)
-                return True
+
+                if self.check_download_started():
+                    return True
+                else:
+                    return False
+
             except:
                 return False
 
-    def check_downloaded(self):
+    # waits 3 seconds to see if any download has started. If yes, returns True.
+    def check_download_started(self):
         name = os.listdir(self.temp_folder)
+
+        for i in range(3):
+            if len(name) == 0:
+                name = os.listdir(self.temp_folder)
+                print(name)
+                print(' FOR')
+                time.sleep(1)
+            else:
+                return True
+
+        return False
+
+    def check_downloaded(self):
+        # items in temp folder
+        name = os.listdir(self.temp_folder)
+
+        # loop until folder is not empty
         while True:
             if len(name) == 0:
-                time.sleep(1)
                 name = os.listdir(self.temp_folder)
             else:
                 break
-        name = name[0]
+        print(name)
+        print('entre')
+        # loop until .crdownload temp file appears
+        while True:
+            if name[0].endswith('.crdownload'):
+                name = name[0]
+                break
+            else:
+                name = os.listdir(self.temp_folder)
+
+        print(name)
+
+        # loop until .crdownload file is replaced with the finished .pdf file
         while True:
             if os.path.exists(os.path.join(self.temp_folder, name)) is False:
                 file_name = os.listdir(self.temp_folder)
@@ -96,26 +140,33 @@ class PDFDownloader:
         year = excel['Publication Year']
         size_list = excel['Title'].size
 
-        for temp in titles:
+        for _ in titles:
             file = open('DownloadLog.txt', 'a')
             #self.gui.app.queueFunction(self.gui.app.setMeter, 'progress_bar2', ((100 * index_progress_bar) / size_list))
+            short_article_name = (str(titles[index_progress_bar - 1]).replace('\'', '').replace('-', ' ')
+                                  .replace(':', '').replace(';', '')).split(' ')
+            if short_article_name[0] != 'A' and short_article_name[0] != 'a' and short_article_name[0] != 'An' and \
+            short_article_name[0] != 'an' and short_article_name[0] != 'The' and short_article_name[0] != 'the':
+                short_article_name = short_article_name[0]
+            else:
+                short_article_name = short_article_name[1]
+
             new_name = str(year[index_progress_bar - 1]) + '-' + (((str(authors[index_progress_bar - 1])
-                            .split(', '))[0]).split(' '))[-1] + '-' + ((str(titles[index_progress_bar - 1])
-                            .replace('A', '').replace('a', '').replace('An', '').replace('an', '').replace('The', '')
-                            .replace('the', '').replace('\'', '').replace('-', ' ')).split(' '))[0]
+                        .split(', '))[0]).split(' '))[-1] + '-' + short_article_name
+
             link = str(links[index_progress_bar - 1])
             index_progress_bar += 1
 
             resp = self.download_file(link)
 
             if resp is False:
-                file.write(new_name + 'FAILED TO DOWNLOAD: '
-                           + 'Link: ' + link + '\n')
+                file.write('FAILED TO DOWNLOAD: ' + new_name
+                           + ' Link: ' + link + '\n')
             else:
                 old_name = self.check_downloaded()
                 self.downloaded_files_quant += 1
                 self.rename_and_move(old_name, new_name + '.pdf')
-                file.write(str(self.downloaded_files_quant) + ' ' + new_name + 'SUCCESSFULLY DOWNLOADED' + '\n')
+                file.write(str(self.downloaded_files_quant) + ' SUCCESSFULLY DOWNLOADED: ' + new_name + '\n')
             file.close()
 
         shutil.rmtree(self.temp_folder)
