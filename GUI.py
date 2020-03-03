@@ -142,7 +142,7 @@ class GUI:
 
     def alphas_selection(self):
         self.app.addLabel('Label_alphas_info', 'Your search will be saved using the equation below.', colspan=2)
-        self.app.addImage('Alphas', 'Images/Alphas_Equation.gif', colspan=2)
+        self.app.addImage('Alphas', os.path.join(self.root_directory, 'Images', 'Alphas_Equation.gif'), colspan=2)
         self.app.addLabel('Label_alphas_options',
                           'Enter the desired Alphas for your search. (For a basic order, enter 1 for all alphas)', colspan=2)
         self.app.setSticky('e')
@@ -209,7 +209,7 @@ class GUI:
         self.app.go()
 
     def about_screen(self):
-        self.app.addImage('Alphas', 'Images/About.gif')
+        self.app.addImage('Alphas', os.path.join(self.root_directory, 'Images', 'About.gif'))
         self.app.setSticky('n')
         self.app.addButton('Close', self.press)
 

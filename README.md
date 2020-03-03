@@ -9,6 +9,8 @@ This program can run in **Windows, Linux and MacOS**.
 - Install Google Tesseract (**[How To](https://github.com/tesseract-ocr/tesseract)**) (This part is optional for now!)
 - You can install all the required dependencies by navigating via terminal/CMD to the folder where this project was 
 downloaded and running the command: `pip install -r requirements.txt`
+- Depending on your OS, you might need to install TKinter (**[How To](https://tkdocs.com/tutorial/install.html)**). This package is default in normal python installations, but
+yours might not have it.
 - Make sure you have **Google Chrome** installed (the program will open a headless version of Chrome and make the search on it)
 - Run the file **Main.py** with the command `python Main.py` on your terminal or cmd.
 
