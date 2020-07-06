@@ -82,7 +82,7 @@ class GUI:
     def show_saved_alert(self, saved_path):
         answer = self.app.yesNoBox('SAVED', 'Your search is saved at this location ' + saved_path +
                                    '.\nWould you like to end the program?')
-        self.app.destroySubWindow('Alphas')
+        # self.app.destroySubWindow('Alphas')
         if answer:
             self.app.stop()
 
@@ -122,10 +122,10 @@ class GUI:
         self.app.setSticky('we')
         self.app.addLabel('Label_Save_options', 'How would you like your search to be ordered?')
         self.app.setSticky('w')
-        self.app.addRadioButton('Save_option_radioButton', "Optimized Rating (RECOMMENDED)")
-        self.app.addRadioButton('Save_option_radioButton', "Influence Factor")
-        self.app.addRadioButton('Save_option_radioButton', "Citation Velocity")
-        self.app.addRadioButton('Save_option_radioButton', "Newer Articles")
+        # self.app.addRadioButton('Save_option_radioButton', "Optimized Rating (RECOMMENDED)")
+        # self.app.addRadioButton('Save_option_radioButton', "Influence Factor")
+        # self.app.addRadioButton('Save_option_radioButton', "Citation Velocity")
+        # self.app.addRadioButton('Save_option_radioButton', "Newer Articles")
         self.app.addRadioButton('Save_option_radioButton', "Alphabetically, by Article's Title")
         self.app.setSticky('')
         self.app.addButton('Save!', self.press)
