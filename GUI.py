@@ -82,7 +82,7 @@ class GUI:
     def show_saved_alert(self, saved_path):
         answer = self.app.yesNoBox('SAVED', 'Your search is saved at this location ' + saved_path +
                                    '.\nWould you like to end the program?')
-        self.app.destroySubWindow('Alphas')
+        # self.app.destroySubWindow('Alphas')
         if answer:
             self.app.stop()
 
@@ -122,10 +122,10 @@ class GUI:
         self.app.setSticky('we')
         self.app.addLabel('Label_Save_options', 'How would you like your search to be ordered?')
         self.app.setSticky('w')
-        self.app.addRadioButton('Save_option_radioButton', "Optimized Rating (RECOMMENDED)")
-        self.app.addRadioButton('Save_option_radioButton', "Influence Factor")
-        self.app.addRadioButton('Save_option_radioButton', "Citation Velocity")
-        self.app.addRadioButton('Save_option_radioButton', "Newer Articles")
+        # self.app.addRadioButton('Save_option_radioButton', "Optimized Rating (RECOMMENDED)")
+        # self.app.addRadioButton('Save_option_radioButton', "Influence Factor")
+        # self.app.addRadioButton('Save_option_radioButton', "Citation Velocity")
+        # self.app.addRadioButton('Save_option_radioButton', "Newer Articles")
         self.app.addRadioButton('Save_option_radioButton', "Alphabetically, by Article's Title")
         self.app.setSticky('')
         self.app.addButton('Save!', self.press)
@@ -139,12 +139,15 @@ class GUI:
         self.app.addButton('New Search', self.press)
         self.app.addLabel('spacing_label3', '')
         self.app.addButton('Merge Old Searches', self.press)
+        self.app.addLabel('spacing_label4', '')
+        self.app.addButton('Downloader', self.press)
 
     def alphas_selection(self):
         self.app.addLabel('Label_alphas_info', 'Your search will be saved using the equation below.', colspan=2)
         self.app.addImage('Alphas', os.path.join(self.root_directory, 'Images', 'Alphas_Equation.gif'), colspan=2)
         self.app.addLabel('Label_alphas_options',
-                          'Enter the desired Alphas for your search. (For a basic order, enter 1 for all alphas)', colspan=2)
+                          'Enter the desired Alphas for your search. (For a basic order, enter 1 for all alphas)',
+                          colspan=2)
         self.app.setSticky('e')
         self.app.addLabel('Alpha1 (Citation Velocity)', row=3, column=0)
         self.app.setSticky('w')
