@@ -37,9 +37,9 @@ class Crawler:
             self.directory_chromedriver = os.path.join(self.root_directory, 'ChromeDriver', 'ChromeDriverLin')
 
         # sets Chrome to run Headless (without showing the navigator window while running)
-        # self.options.add_argument('--headless')
-        # self.options.add_argument('--no-sandbox')
-        # self.options.add_argument('--disable-gpu')
+        self.options.add_argument('--headless')
+        self.options.add_argument('--no-sandbox')
+        self.options.add_argument('--disable-gpu')
 
         self.start_time = Timer.timeNow()
         self.end_time = Timer.timeNow()
