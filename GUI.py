@@ -62,7 +62,7 @@ class GUI:
         self.app.addLabel('label_space', '', row=2)
         self.app.addLabel('Label_Pages_Quantity', 'Select how many pages would you like to search:', row=3)
         self.app.addScale('Quantity_scale', row=4)
-        self.app.setScaleRange('Quantity_scale', 0, 50, 1)
+        self.app.setScaleRange('Quantity_scale', 0, 50, 10)
         self.app.showScaleIntervals('Quantity_scale', 5)
         self.app.showScaleValue('Quantity_scale', True)
         self.app.setStretch('both')
@@ -140,7 +140,7 @@ class GUI:
         self.app.addLabel('spacing_label3', '')
         self.app.addButton('Merge Old Searches', self.press)
         self.app.addLabel('spacing_label4', '')
-        self.app.addButton('Downloader', self.press)
+        # self.app.addButton('Downloader', self.press)
 
     def alphas_selection(self):
         self.app.addLabel('Label_alphas_info', 'Your search will be saved using the equation below.', colspan=2)

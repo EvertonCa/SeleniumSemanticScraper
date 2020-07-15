@@ -41,22 +41,9 @@ were gathered.
 You will then be asked if you'd like to download all the available PDFs from your search. You can skip this part by 
 pressing the "Skip" button. Otherwise, just click "Start Downloads!". When the downloads are done, you can click "Next".
 
-After that you will be asked about how would you like to save your search.
-
-- The first option uses an optimized algorithm for ordering your search
-- The second option orders your search by Influence Factor
-- The third option orders your search by Citation Velocity
-- The forth option orders your search by Newest Articles
-- The last option orders your search by Alpabetical order, using the Article's Title.
+After that you will be able to save your search by alphabetical order, using the Article's Title.
 
 After selecting your option, press "Save!" and you will be shown a pop up telling your where the Excel file was saved.
-
-![Print](SupportImages/Save_Page.png)
-
-If you choose the first option, you will have to select the Alphas for your search. For a equally balanced search, 
-input 1 for all alphas. Do not use decimal number.
-
-![Print](SupportImages/Algorithm_Page.png)
 
 # Multiple Searches
 If you'd like to merge multiple searches, generating only one ordered Excel File, you can choose
