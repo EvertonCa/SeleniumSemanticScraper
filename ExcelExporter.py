@@ -10,12 +10,8 @@ class ExcelExporter:
         self.authors_list = []
         self.search_parameter = search
         self.ordered_date_articles_list = []
-        self.ordered_influence_articles_list = []
-        self.ordered_velocity_articles_list = []
+        self.ordered_citations_articles_list = []
         self.ordered_optimized_list = []
-        self.alpha1 = 1
-        self.alpha2 = 1
-        self.alpha3 = 1
         self.gui = None
         self.single_or_merge = single_or_merge
 
@@ -27,82 +23,70 @@ class ExcelExporter:
         if self.single_or_merge:
             self.articles_list = self.gui.merger.articles_list
             self.authors_list = self.gui.merger.authors_list
-            if parameter == 'Optimized Rating (RECOMMENDED)':
-                self.merge_creator(1)
-            elif parameter == "Influence Factor":
-                self.merge_creator(2)
-            elif parameter == "Citation Velocity":
-                self.merge_creator(3)
-            elif parameter == "Newer Articles":
-                self.merge_creator(4)
-            elif parameter == "Alphabetically, by Article's Title":
-                self.merge_creator(5)
-        else:
-            if parameter == 'Optimized Rating (RECOMMENDED)':
-                self.single_creator(1)
-            elif parameter == "Influence Factor":
-                self.single_creator(2)
-            elif parameter == "Citation Velocity":
-                self.single_creator(3)
-            elif parameter == "Newer Articles":
-                self.single_creator(4)
-            elif parameter == "Alphabetically, by Article's Title":
-                self.single_creator(5)
 
-    def define_alphas(self):
-        self.alpha1 = self.gui.alpha1
-        self.alpha2 = self.gui.alpha2
-        self.alpha3 = self.gui.alpha3
+            if parameter == 'Importance Rate (RECOMMENDED)':
+                self.merge_creator(1)
+            elif parameter == "Number of Citations":
+                self.merge_creator(2)
+            elif parameter == "Newer Articles":
+                self.merge_creator(3)
+            elif parameter == "Alphabetically, by Article's Title":
+                self.merge_creator(4)
+        else:
+            if parameter == 'Importance Rate (RECOMMENDED)':
+                self.single_creator(1)
+            elif parameter == "Number of Citations":
+                self.single_creator(2)
+            elif parameter == "Newer Articles":
+                self.single_creator(3)
+            elif parameter == "Alphabetically, by Article's Title":
+                self.single_creator(4)
 
     def order_optimized(self, articles_list):
-        max_influence = 0
-        max_velocity = 0
         newer_date = 0
+
         for article in articles_list:
             if int(article.data) > newer_date:
                 newer_date = int(article.data)
-            if int(article.influencia) > max_influence:
-                max_influence = int(article.influencia)
-            if int(article.velocidade) > max_velocity:
-                max_velocity = int(article.velocidade)
 
         for article in articles_list:
             article.data_relativa = int(article.data) / newer_date
-            article.influencia_relativa = int(article.influencia) / max_influence
-            article.velocidade_relativa = int(article.velocidade) / max_velocity
-            article.total_factor = \
-                (((self.alpha1 / (self.alpha1 + self.alpha2 + self.alpha3)) * article.velocidade_relativa) +
-                 ((self.alpha2 / (self.alpha1 + self.alpha2 + self.alpha3)) * article.influencia_relativa) +
-                 ((self.alpha3 / (self.alpha1 + self.alpha2 + self.alpha3)) * article.data_relativa))
+
+            # put a score based on number of citations
+            if int(article.citacoes) > 100:
+                article.citacoes_relativa = 1
+            elif 20 < int(article.citacoes) <= 100:
+                article.citacoes_relativa = 0.5
+            else:
+                article.citacoes_relativa = 0
+
+            # put a score based on article's type
+            label = float(self.article_label(article))
+            article.cite_label = (4 - label)/3
+
+            article.total_factor = article.data_relativa + article.citacoes_relativa + article.cite_label
 
         self.ordered_optimized_list = articles_list
         self.ordered_optimized_list.sort(key=lambda model: model.total_factor, reverse=True)
 
     def order_articles(self, articles_list, order_type):
-        max_influence = 0
-        max_velocity = 0
+        max_citations = 0
         newer_date = 0
         for article in articles_list:
             if int(article.data) > newer_date:
                 newer_date = int(article.data)
-            if int(article.influencia) > max_influence:
-                max_influence = int(article.influencia)
-            if int(article.velocidade) > max_velocity:
-                max_velocity = int(article.velocidade)
+            if int(article.citacoes) > max_citations:
+                max_citations = int(article.citacoes)
 
         for article in articles_list:
             article.data_relativa = int(article.data) / newer_date
-            article.influencia_relativa = int(article.influencia) / max_influence
-            article.velocidade_relativa = int(article.velocidade) / max_velocity
+            article.citacoes_relativa = int(article.citacoes) / max_citations
 
         self.ordered_date_articles_list = articles_list
-        self.ordered_influence_articles_list = articles_list
-        self.ordered_velocity_articles_list = articles_list
+        self.ordered_citations_articles_list = articles_list
 
         if order_type == 1:
-            self.ordered_influence_articles_list.sort(key=lambda model: model.influencia_relativa, reverse=True)
-        elif order_type == 2:
-            self.ordered_velocity_articles_list.sort(key=lambda model: model.velocidade_relativa, reverse=True)
+            self.ordered_citations_articles_list.sort(key=lambda model: model.citacoes_relativa, reverse=True)
         else:
             self.ordered_date_articles_list.sort(key=lambda model: model.data_relativa, reverse=True)
 
@@ -123,11 +107,10 @@ class ExcelExporter:
         autores = 3
         publicado = 4
         data = 5
-        influencia = 6
-        velocidade = 7
-        optimized = 8
-        link = 9
-        bibtex = 10
+        citacoes = 6
+        optimized = 7
+        link = 8
+        bibtex = 9
         linha = 0
 
         label_comment = 'Label NUMBER: 1 -> article\n' \
@@ -166,27 +149,22 @@ class ExcelExporter:
         worksheet_artigos.write(linha, autores, 'Authors', primeiraLinha_format)
         worksheet_artigos.write(linha, publicado, 'Publication Source', primeiraLinha_format)
         worksheet_artigos.write(linha, data, 'Publication Year', primeiraLinha_format)
-        worksheet_artigos.write(linha, influencia, 'Influence Factor', primeiraLinha_format)
-        worksheet_artigos.write(linha, velocidade, 'Citation Velocity', primeiraLinha_format)
+        worksheet_artigos.write(linha, citacoes, 'Citations', primeiraLinha_format)
         worksheet_artigos.write(linha, link, 'Article Link', primeiraLinha_format)
         worksheet_artigos.write(linha, bibtex, 'BibTex', primeiraLinha_format)
-        worksheet_artigos.write(linha, optimized, 'Optimized Factor', primeiraLinha_format)
+        worksheet_artigos.write(linha, optimized, 'Importance Rate', primeiraLinha_format)
         linha += 1
 
         if search_type == 1:
-            self.define_alphas()
             self.order_optimized(self.articles_list)
             self.articles_list = self.ordered_optimized_list
         elif search_type == 2:
             self.order_articles(self.articles_list, 1)
-            self.articles_list = self.ordered_influence_articles_list
+            self.articles_list = self.ordered_citations_articles_list
         elif search_type == 3:
-            self.order_articles(self.articles_list, 2)
-            self.articles_list = self.ordered_velocity_articles_list
-        elif search_type == 4:
             self.order_articles(self.articles_list, 3)
             self.articles_list = self.ordered_date_articles_list
-        elif search_type == 5:
+        elif search_type == 4:
             pass
 
         numeroDoArtigo = 1
@@ -195,28 +173,18 @@ class ExcelExporter:
             primeiraLinha = linha
             worksheet_artigos.write(linha, indice, str(numeroDoArtigo), one_line_format)
 
-            article_label = ''
-            if artigo.cite == 'article':
-                article_label = '1'
-            elif artigo.cite == 'conference' or artigo.cite == 'inproceedings' or artigo.cite == 'proceedings' or \
-                    artigo.cite == 'phdthesis':
-                article_label = '2'
-            elif artigo.cite == 'mastersthesis' or artigo.cite == 'book' or artigo.cite == 'inbook' or \
-                    artigo.cite == 'Incollection' or artigo.cite == 'techreport':
-                article_label = '3'
-            else:
-                article_label = '4'
+            articleLabel = self.article_label(artigo)
 
-            worksheet_artigos.write(linha, type, article_label, one_line_format)
+            worksheet_artigos.write(linha, type, articleLabel, one_line_format)
             worksheet_artigos.write(linha, titulo, artigo.titulo, one_line_format)
             worksheet_artigos.write(linha, publicado, artigo.publicado_em, one_line_format)
             worksheet_artigos.write(linha, data, artigo.data, one_line_format)
-            worksheet_artigos.write(linha, influencia, artigo.influencia, one_line_format)
-            worksheet_artigos.write(linha, velocidade, artigo.velocidade, one_line_format)
+            worksheet_artigos.write(linha, citacoes, artigo.citacoes, one_line_format)
             worksheet_artigos.write(linha, optimized, artigo.total_factor, one_line_format)
             worksheet_artigos.write(linha, link, artigo.link, one_line_format)
             worksheet_artigos.write(linha, bibtex, artigo.bibtex, one_line_format)
             authors = ''
+
             for autor in artigo.autores:
                 authors += autor.nome + ', '
             authors = authors[:-2]
@@ -273,11 +241,10 @@ class ExcelExporter:
         autores = 3
         publicado = 4
         data = 5
-        influencia = 6
-        velocidade = 7
-        optimized = 8
-        link = 9
-        bibtex = 10
+        citacoes = 6
+        optimized = 7
+        link = 8
+        bibtex = 9
         linha = 0
 
         label_comment = 'Label NUMBER: 1 -> article\n' \
@@ -316,11 +283,10 @@ class ExcelExporter:
         worksheet_artigos.write(linha, autores, 'Authors', primeiraLinha_format)
         worksheet_artigos.write(linha, publicado, 'Publication Source', primeiraLinha_format)
         worksheet_artigos.write(linha, data, 'Publication Year', primeiraLinha_format)
-        worksheet_artigos.write(linha, influencia, 'Influence Factor', primeiraLinha_format)
-        worksheet_artigos.write(linha, velocidade, 'Citation Velocity', primeiraLinha_format)
+        worksheet_artigos.write(linha, citacoes, 'Citations', primeiraLinha_format)
         worksheet_artigos.write(linha, link, 'Article Link', primeiraLinha_format)
         worksheet_artigos.write(linha, bibtex, 'BibTex', primeiraLinha_format)
-        worksheet_artigos.write(linha, optimized, 'Optimized Factor', primeiraLinha_format)
+        worksheet_artigos.write(linha, optimized, 'Importance Rate', primeiraLinha_format)
         linha += 1
 
         gerenciador = Gerenciador.Gerenciador(self.search_parameter, self.root_directory)
@@ -328,19 +294,15 @@ class ExcelExporter:
         listaDeAutores = gerenciador.loadAutores()
 
         if search_type == 1:
-            self.define_alphas()
             self.order_optimized(listaDeArtigos)
             listaDeArtigos = self.ordered_optimized_list
         elif search_type == 2:
             self.order_articles(listaDeArtigos, 1)
-            listaDeArtigos = self.ordered_influence_articles_list
+            listaDeArtigos = self.ordered_citations_articles_list
         elif search_type == 3:
             self.order_articles(listaDeArtigos, 2)
-            listaDeArtigos = self.ordered_velocity_articles_list
-        elif search_type == 4:
-            self.order_articles(listaDeArtigos, 3)
             listaDeArtigos = self.ordered_date_articles_list
-        elif search_type == 5:
+        elif search_type == 4:
             pass
 
         numeroDoArtigo = 1
@@ -349,28 +311,18 @@ class ExcelExporter:
             primeiraLinha = linha
             worksheet_artigos.write(linha, indice, str(numeroDoArtigo), one_line_format)
 
-            article_label = ''
-            if artigo.cite == 'article':
-                article_label = '1'
-            elif artigo.cite == 'conference' or artigo.cite == 'inproceedings' or artigo.cite == 'proceedings' or \
-                    artigo.cite == 'phdthesis':
-                article_label = '2'
-            elif artigo.cite == 'mastersthesis' or artigo.cite == 'book' or artigo.cite == 'inbook' or \
-                    artigo.cite == 'Incollection' or artigo.cite == 'techreport':
-                article_label = '3'
-            else:
-                article_label = '4'
+            articleLabel = self.article_label(artigo)
 
-            worksheet_artigos.write(linha, type, article_label, one_line_format)
+            worksheet_artigos.write(linha, type, articleLabel, one_line_format)
             worksheet_artigos.write(linha, titulo, artigo.titulo, one_line_format)
             worksheet_artigos.write(linha, publicado, artigo.publicado_em, one_line_format)
             worksheet_artigos.write(linha, data, artigo.data, one_line_format)
-            worksheet_artigos.write(linha, influencia, artigo.influencia, one_line_format)
-            worksheet_artigos.write(linha, velocidade, artigo.velocidade, one_line_format)
+            worksheet_artigos.write(linha, citacoes, artigo.citacoes, one_line_format)
             worksheet_artigos.write(linha, optimized, artigo.total_factor, one_line_format)
             worksheet_artigos.write(linha, link, artigo.link, one_line_format)
             worksheet_artigos.write(linha, bibtex, artigo.bibtex, one_line_format)
             authors = ''
+
             for autor in artigo.autores:
                 authors += autor.nome + ', '
             authors = authors[:-2]
@@ -410,3 +362,17 @@ class ExcelExporter:
         workbook.close()
 
         self.gui.show_saved_alert(diretorio_excel)
+
+    def article_label(self, artigo):
+        if artigo.cite == 'article':
+            article_label = '1'
+        elif artigo.cite == 'conference' or artigo.cite == 'inproceedings' or artigo.cite == 'proceedings' or \
+                artigo.cite == 'phdthesis':
+            article_label = '2'
+        elif artigo.cite == 'mastersthesis' or artigo.cite == 'book' or artigo.cite == 'inbook' or \
+                artigo.cite == 'Incollection' or artigo.cite == 'techreport':
+            article_label = '3'
+        else:
+            article_label = '4'
+
+        return article_label

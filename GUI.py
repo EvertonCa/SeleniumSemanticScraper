@@ -22,9 +22,6 @@ class GUI:
         self.search_phrase = ''
         self.input_pages = 0
         self.crawler = Crawler(self.root_directory)
-        self.alpha1 = 1
-        self.alpha2 = 1
-        self.alpha3 = 1
         self.folders_text = ''
         self.folders_list = []
         self.single_or_merge = False
@@ -62,7 +59,7 @@ class GUI:
         self.app.addLabel('label_space', '', row=2)
         self.app.addLabel('Label_Pages_Quantity', 'Select how many pages would you like to search:', row=3)
         self.app.addScale('Quantity_scale', row=4)
-        self.app.setScaleRange('Quantity_scale', 0, 50, 10)
+        self.app.setScaleRange('Quantity_scale', 0, 50, 5)
         self.app.showScaleIntervals('Quantity_scale', 5)
         self.app.showScaleValue('Quantity_scale', True)
         self.app.setStretch('both')
@@ -82,7 +79,6 @@ class GUI:
     def show_saved_alert(self, saved_path):
         answer = self.app.yesNoBox('SAVED', 'Your search is saved at this location ' + saved_path +
                                    '.\nWould you like to end the program?')
-        # self.app.destroySubWindow('Alphas')
         if answer:
             self.app.stop()
 
@@ -122,10 +118,9 @@ class GUI:
         self.app.setSticky('we')
         self.app.addLabel('Label_Save_options', 'How would you like your search to be ordered?')
         self.app.setSticky('w')
-        # self.app.addRadioButton('Save_option_radioButton', "Optimized Rating (RECOMMENDED)")
-        # self.app.addRadioButton('Save_option_radioButton', "Influence Factor")
-        # self.app.addRadioButton('Save_option_radioButton', "Citation Velocity")
-        # self.app.addRadioButton('Save_option_radioButton', "Newer Articles")
+        self.app.addRadioButton('Save_option_radioButton', "Importance Rate (RECOMMENDED)")
+        self.app.addRadioButton('Save_option_radioButton', "Number of Citations")
+        self.app.addRadioButton('Save_option_radioButton', "Newer Articles")
         self.app.addRadioButton('Save_option_radioButton', "Alphabetically, by Article's Title")
         self.app.setSticky('')
         self.app.addButton('Save!', self.press)
@@ -139,29 +134,6 @@ class GUI:
         self.app.addButton('New Search', self.press)
         self.app.addLabel('spacing_label3', '')
         self.app.addButton('Merge Old Searches', self.press)
-        self.app.addLabel('spacing_label4', '')
-        # self.app.addButton('Downloader', self.press)
-
-    def alphas_selection(self):
-        self.app.addLabel('Label_alphas_info', 'Your search will be saved using the equation below.', colspan=2)
-        self.app.addImage('Alphas', os.path.join(self.root_directory, 'Images', 'Alphas_Equation.gif'), colspan=2)
-        self.app.addLabel('Label_alphas_options',
-                          'Enter the desired Alphas for your search. (For a basic order, enter 1 for all alphas)',
-                          colspan=2)
-        self.app.setSticky('e')
-        self.app.addLabel('Alpha1 (Citation Velocity)', row=3, column=0)
-        self.app.setSticky('w')
-        self.app.addEntry('Alpha1_entry', row=3, column=1)
-        self.app.setSticky('e')
-        self.app.addLabel('Alpha2 (Influence Factor)', row=4, column=0)
-        self.app.setSticky('w')
-        self.app.addEntry('Alpha2_entry', row=4, column=1)
-        self.app.setSticky('e')
-        self.app.addLabel('Alpha3 (Date)', row=5, column=0)
-        self.app.setSticky('w')
-        self.app.addEntry('Alpha3_entry', row=5, column=1)
-        self.app.setSticky('n')
-        self.app.addButton('OK!', self.press, row=6, colspan=2)
 
     def merge_searches(self):
         self.app.setStretch('both')
@@ -228,15 +200,6 @@ class GUI:
         downloader = PDFDownloader(self.search_phrase, self.root_directory, self)
         downloader.start()
 
-    def get_alphas_and_start(self):
-        if self.app.getEntry('Alpha1_entry') != '':
-            self.alpha1 = int(self.app.getEntry('Alpha1_entry'))
-        if self.app.getEntry('Alpha2_entry') != '':
-            self.alpha2 = int(self.app.getEntry('Alpha2_entry'))
-        if self.app.getEntry('Alpha3_entry') != '':
-            self.alpha3 = int(self.app.getEntry('Alpha3_entry'))
-        self.app.thread(self.crawler.saves_excel(self.app.getRadioButton('Save_option_radioButton')))
-
     def press(self, btn):
         if btn == "Next1" or btn == "Next2":
             self.search_phrase = self.app.getEntry('Entry_Search')
@@ -264,16 +227,7 @@ class GUI:
             self.app.thread(self.start_downloads)
 
         elif btn == 'Save!':
-            if self.app.getRadioButton('Save_option_radioButton') == "Optimized Rating (RECOMMENDED)":
-                self.app.startSubWindow('Alphas', 'Select Alphas', True, )
-                self.app.showSubWindow('Alphas')
-                self.alphas_selection()
-                self.app.stopSubWindow()
-            else:
-                self.crawler.saves_excel(self.app.getRadioButton('Save_option_radioButton'))
-
-        elif btn == 'OK!':
-            self.get_alphas_and_start()
+            self.crawler.saves_excel(self.app.getRadioButton('Save_option_radioButton'))
 
         elif btn == 'New Search':
             self.app.selectFrame('Pages', 1)
@@ -297,4 +251,3 @@ class GUI:
 
         elif btn == 'Close!':
             self.app.destroySubWindow('Help')
-
