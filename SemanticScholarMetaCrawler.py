@@ -261,9 +261,18 @@ class Crawler:
                     except:
                         pass
 
+                    # saves the article synopsis as a string
+                    synopsis = 'No synopsis'
+                    try:
+                        item.find_element_by_xpath(".//span[@class='more mod-clickable']").click()
+                        element = item.find_element_by_xpath(".//span[@class='abstract full-abstract']")
+                        synopsis = element.text.replace(" Collapse", "")
+                    except:
+                        pass
+
                     # creates a new instance of a Article object
                     new_article = Artigo.Artigo(title, list_authors_in_article, origin, date,
-                                                citations, link, cite, bibtex)
+                                                citations, link, cite, bibtex, synopsis)
 
                     # adds new article to set list (set list does not allow duplicates)
                     before = len(self.list_articles)
