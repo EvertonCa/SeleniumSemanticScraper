@@ -1,5 +1,5 @@
 class Artigo:
-    def __init__(self, titulo, autores, publicado, data, influencia, velocidade, link, cite, bibtex):
+    def __init__(self, titulo, autores, publicado, data, influencia, velocidade, link, cite, bibtex, synopsis):
         self.titulo = titulo
         self.autores = autores
         self.publicado_em = publicado
@@ -13,6 +13,7 @@ class Artigo:
         self.link = link
         self.cite = cite
         self.bibtex = bibtex
+        self.synopsis = synopsis
 
     def __lt__(self, other):
         return self.titulo < other
