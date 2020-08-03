@@ -1,14 +1,13 @@
 class Artigo:
-    def __init__(self, titulo, autores, publicado, data, influencia, velocidade, link, cite, bibtex):
+    def __init__(self, titulo, autores, publicado, data, citacoes, link, cite, bibtex):
         self.titulo = titulo
         self.autores = autores
         self.publicado_em = publicado
         self.data = data
-        self.influencia = influencia
-        self.velocidade = velocidade
+        self.citacoes = citacoes
         self.data_relativa = 0
-        self.influencia_relativa = 0
-        self.velocidade_relativa = 0
+        self.citacoes_relativa = 0
+        self.cite_label = 0
         self.total_factor = 0
         self.link = link
         self.cite = cite

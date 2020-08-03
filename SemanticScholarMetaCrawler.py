@@ -37,6 +37,8 @@ class Crawler:
             self.directory_chromedriver = os.path.join(self.root_directory, 'ChromeDriver', 'ChromeDriverLin')
 
         # sets Chrome to run Headless (without showing the navigator window while running)
+        self.options.add_argument("--window-size=1920,1080")
+        self.options.add_argument("--start-maximized")
         self.options.add_argument('--headless')
         self.options.add_argument('--no-sandbox')
         self.options.add_argument('--disable-gpu')
@@ -77,7 +79,7 @@ class Crawler:
         driver = webdriver.Chrome(self.directory_chromedriver, chrome_options=self.options)
 
         # runs the following code 3 times, one for each type os search
-        for k in range(0, 1):
+        for k in range(0, 3):
             # label gui
             self.gui.app.queueFunction(self.gui.app.setLabel, 'progress_bar_label', 'Crawling with '
                                        + str(k+1) + '/3 parameter...')
@@ -104,7 +106,7 @@ class Crawler:
             driver.find_element_by_name('q').send_keys(self.input_search)
             driver.find_element_by_name('q').send_keys(Keys.ENTER)
 
-            # waits for the page to load
+            # waits for the page to load. It happens when the number of results is shown
             try:
                 waitelement = WebDriverWait(driver, 20). \
                     until(EC.presence_of_element_located(
@@ -113,13 +115,20 @@ class Crawler:
                 print("~~~~ PAGE DID NOT LOAD! ~~~~")
 
             # tests which type of search has been done and sets the correct one
-            if k == 1:
+            if k == 1:  # results from the last five years
+                driver.find_element_by_xpath(
+                    "//button[@class='cl-button cl-button--no-arrow-divider cl-button--not-icon-only cl-button--no-icon cl-button--has-label cl-button--icon-pos-left cl-button--shape-rectangle cl-button--size-default cl-button--type-default cl-dropdown-button cl-dropdown dropdown-filters__dates']").click()
                 element = driver.find_element_by_xpath(
                     "//button[@data-selenium-selector='last-five-years-filter-button']")
                 driver.execute_script('arguments[0].click()', element)
-            elif k == 2:
-                element = driver.find_element_by_xpath("//button[@data-selenium-selector='reviews-filter-button']")
-                driver.execute_script('arguments[0].click()', element)
+                driver.find_element_by_xpath(
+                    "//div[@class='flex-container flex-row-vcenter dropdown-filters__flex-container']").click()
+            elif k == 2:  # results with Reviews marked
+                driver.find_element_by_xpath(
+                    "//button[@class='cl-button cl-button--no-arrow-divider cl-button--not-icon-only cl-button--no-icon cl-button--has-label cl-button--icon-pos-left cl-button--shape-rectangle cl-button--size-default cl-button--type-default cl-dropdown-button cl-dropdown dropdown-filters__pub_type']").click()
+                driver.find_element_by_xpath("//*[contains(text(), 'Review (')]").click()
+                driver.find_element_by_xpath(
+                    "//div[@class='flex-container flex-row-vcenter dropdown-filters__flex-container']").click()
             else:
                 pass
 
@@ -212,23 +221,13 @@ class Crawler:
                     except:
                         pass
 
-                    # saves the article influence factor as a string
-                    influence = '0'
+                    # saves the article total citations as a string
+                    citations = '0'
                     try:
-                        influence = item.find_element_by_xpath(
-                            ".//li[@data-selenium-selector='search-result-influential-citations']").text
-                        influence = influence.replace(',', '')
-                        influence = influence.replace('.', '')
-                    except:
-                        pass
-
-                    # saves the article citation velocity as a string
-                    velocity = '0'
-                    try:
-                        velocity = item.find_element_by_xpath(
-                            ".//li[@data-selenium-selector='search-result-citation-velocity']").text
-                        velocity = velocity.replace(',', '')
-                        velocity = velocity.replace('.', '')
+                        citations = item.find_element_by_xpath(
+                            ".//li[@data-selenium-selector='search-result-total-citations']").text
+                        citations = citations.replace(',', '')
+                        citations = citations.replace('.', '')
                     except:
                         pass
 
@@ -253,7 +252,7 @@ class Crawler:
                             print("~~~~ PAGE DID NOT LOAD! ~~~~")
 
                         cite = driver.find_element_by_xpath(
-                            "//cite[@class='formatted-citation formatted-citation--style-bibtex']").text
+                            "//cite[@class='formatted-citation formatted-citation--style-bibtex']").get_attribute('textContent')
                         driver.find_element_by_xpath(
                             "//cite[@class='formatted-citation formatted-citation--style-bibtex']").send_keys(
                             Keys.ESCAPE)
@@ -264,7 +263,7 @@ class Crawler:
 
                     # creates a new instance of a Article object
                     new_article = Artigo.Artigo(title, list_authors_in_article, origin, date,
-                                                influence, velocity, link, cite, bibtex)
+                                                citations, link, cite, bibtex)
 
                     # adds new article to set list (set list does not allow duplicates)
                     before = len(self.list_articles)
