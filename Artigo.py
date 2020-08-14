@@ -9,6 +9,7 @@ class Artigo:
         self.citacoes_relativa = 0
         self.cite_label = 0
         self.total_factor = 0
+        self.impact_factor = " "
         self.link = link
         self.cite = cite
         self.bibtex = bibtex

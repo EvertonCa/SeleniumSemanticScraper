@@ -126,6 +126,8 @@ class Crawler:
             elif k == 2:  # results with Reviews marked
                 driver.find_element_by_xpath(
                     "//button[@class='cl-button cl-button--no-arrow-divider cl-button--not-icon-only cl-button--no-icon cl-button--has-label cl-button--icon-pos-left cl-button--shape-rectangle cl-button--size-default cl-button--type-default cl-dropdown-button cl-dropdown dropdown-filters__pub_type']").click()
+                driver.find_element_by_xpath(
+                    "//section[@data-selenium-selector='publicationType']").click()
                 driver.find_element_by_xpath("//*[contains(text(), 'Review (')]").click()
                 driver.find_element_by_xpath(
                     "//div[@class='flex-container flex-row-vcenter dropdown-filters__flex-container']").click()
