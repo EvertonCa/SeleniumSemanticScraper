@@ -126,8 +126,6 @@ class Crawler:
             elif k == 2:  # results with Reviews marked
                 driver.find_element_by_xpath(
                     "//button[@class='cl-button cl-button--no-arrow-divider cl-button--not-icon-only cl-button--no-icon cl-button--has-label cl-button--icon-pos-left cl-button--shape-rectangle cl-button--size-default cl-button--type-default cl-dropdown-button cl-dropdown dropdown-filters__pub_type']").click()
-                driver.find_element_by_xpath(
-                    "//section[@data-selenium-selector='publicationType']").click()
                 driver.find_element_by_xpath("//*[contains(text(), 'Review (')]").click()
                 driver.find_element_by_xpath(
                     "//div[@class='flex-container flex-row-vcenter dropdown-filters__outer-flex-container']").click()
@@ -152,7 +150,7 @@ class Crawler:
                         break
 
                 # searches for the articles in the page and saves them in a list
-                list_articles_in_page = driver.find_elements_by_xpath("//article[@class='search-result']")
+                list_articles_in_page = driver.find_elements_by_xpath("//div[@class='cl-paper-row serp-papers__paper-row']")
 
                 # iterates over each article in the articles list
                 for item in list_articles_in_page:
@@ -161,7 +159,7 @@ class Crawler:
 
                     # saves all authors with a html link to their pages in a list
                     list_authors_html_link = item.find_elements_by_xpath(
-                        ".//a[@class='author-list__link author-list__author-name']")
+                        ".//a[@class='cl-paper-authors__author-link']")
 
                     # saves all authors without a html link to their pages in a list
                     list_authors_without_html_link = None
@@ -219,7 +217,10 @@ class Crawler:
                     # saves the article date as a string
                     date = '0'
                     try:
-                        date = item.find_element_by_xpath(".//span[@data-heap-id='paper-year']").text
+                        date = item.find_element_by_xpath(".//span[@class='cl-paper-pubdates']").text
+                        full_date = date.split()
+                        date = full_date[-1]
+
                     except:
                         pass
 
@@ -227,7 +228,7 @@ class Crawler:
                     citations = '0'
                     try:
                         citations = item.find_element_by_xpath(
-                            ".//li[@data-selenium-selector='search-result-total-citations']").text
+                            ".//div[@data-selenium-selector='total-citations-stat']").text
                         citations = citations.replace(',', '')
                         citations = citations.replace('.', '')
                     except:
@@ -236,7 +237,7 @@ class Crawler:
                     # saves the article html link as a string
                     link = '-'
                     try:
-                        link = item.find_element_by_xpath(".//a[@data-selenium-selector='paper-link']").get_attribute(
+                        link = item.find_element_by_xpath(".//a[@class='flex-row cl-paper-view-paper']").get_attribute(
                             'href')
                     except:
                         pass
@@ -267,7 +268,7 @@ class Crawler:
                     synopsis = 'No synopsis'
                     try:
                         item.find_element_by_xpath(".//span[@class='more mod-clickable']").click()
-                        element = item.find_element_by_xpath(".//span[@class='abstract full-abstract']")
+                        element = item.find_element_by_xpath(".//div[@class='cl-paper-abstract']")
                         synopsis = element.text.replace(" Collapse", "")
                     except:
                         pass
