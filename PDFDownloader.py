@@ -29,8 +29,12 @@ class PDFDownloader:
         local_filename = name + '.pdf'
         local_filename = local_filename.replace(':', '-').replace('"', '').replace(';', '-').replace('/', '-'). \
             replace('\\', '-').replace('?', '').replace('!', '')
+
+        #  Necessary validation in some download pages (e.g. aclweb.org) to check if request is made from some browser
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36'}
+
         # NOTE the stream=True parameter below
-        with requests.get(url, stream=False) as r:
+        with requests.get(url, stream=False, headers=headers) as r:
             r.raise_for_status()
             with open(os.path.join(self.pdf_directory, local_filename), 'wb') as f:
                 for chunk in r.iter_content(chunk_size=8192):

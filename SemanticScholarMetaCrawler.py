@@ -117,7 +117,7 @@ class Crawler:
             # tests which type of search has been done and sets the correct one
             if k == 1:  # results from the last five years
                 driver.find_element_by_xpath(
-                    "//button[@class='cl-button cl-button--no-arrow-divider cl-button--not-icon-only cl-button--no-icon cl-button--has-label cl-button--icon-pos-left cl-button--shape-rectangle cl-button--size-default cl-button--type-default cl-button--density-default cl-dropdown-button cl-dropdown dropdown-filters__dates']").click()
+                    "//span[contains(text(),'Date Range')]").click()
                 element = driver.find_element_by_xpath(
                     "//button[@data-selenium-selector='last-five-years-filter-button']")
                 driver.execute_script('arguments[0].click()', element)
@@ -125,7 +125,7 @@ class Crawler:
                     "//div[@class='flex-container flex-row-vcenter dropdown-filters__outer-flex-container']").click()
             elif k == 2:  # results with Reviews marked
                 driver.find_element_by_xpath(
-                    "//button[@class='cl-button cl-button--no-arrow-divider cl-button--not-icon-only cl-button--no-icon cl-button--has-label cl-button--icon-pos-left cl-button--shape-rectangle cl-button--size-default cl-button--type-default cl-button--density-default cl-dropdown-button cl-dropdown dropdown-filters__pub_type']").click()
+                    "//span[contains(text(),'Publication Type')]").click()
                 driver.find_element_by_xpath("//*[contains(text(), 'Review (')]").click()
                 driver.find_element_by_xpath(
                     "//div[@class='flex-container flex-row-vcenter dropdown-filters__outer-flex-container']").click()
