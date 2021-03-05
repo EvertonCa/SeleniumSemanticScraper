@@ -140,12 +140,18 @@ class GUI:
         self.app.setSticky('n')
         self.app.addLabel('Label_merge_searches',
                           'Select the searches directories you would like to merge.', colspan=2)
+
+        self.app.startScrollPane("folders_list", colspan=2)
+        self.app.setScrollPaneWidth("folders_list", 605)
+        self.app.setScrollPaneHeight("folders_list", 250)
         self.app.setStretch('both')
         self.app.setSticky('nsew')
         self.app.addMessage('folders_merge', '', colspan=2)
         self.app.setMessageWidth('folders_merge', 600)
         self.app.setStretch('')
         self.app.setSticky('s')
+        self.app.stopScrollPane()
+
         self.app.addButton('Select Folder', self.press, row=3, column=0)
         self.app.addButton('Merge Searches', self.press, row=3, column=1)
 
