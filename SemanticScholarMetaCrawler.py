@@ -243,7 +243,6 @@ class Crawler:
                     # saves the article html link as a string
                     link = '-'
                     try:
-                        #article_actions = item.find_element_by_xpath(".//div[class='cl-paper-action__button-container'")
                         link = item.find_element_by_xpath(".//a[@class='flex-row cl-paper-view-paper']")\
                             .get_attribute('href')
                     except:
