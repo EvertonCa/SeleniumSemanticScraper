@@ -114,21 +114,29 @@ class Crawler:
             except TimeoutError:
                 print("~~~~ PAGE DID NOT LOAD! ~~~~")
 
+            # Check all the filters in menu
+            filters = driver.find_elements_by_xpath("//button[@class='cl-button cl-button--no-arrow-divider cl-button--not-icon-only cl-button--no-icon cl-button--has-label cl-button--icon-pos-left cl-button--shape-rectangle cl-button--size-default cl-button--type-default cl-button--density-default cl-dropdown-button']")
+            date_filter = None
+            type_filter = None
+            for f in filters:
+                if f.text == "Date Range":
+                    date_filter = f
+                elif f.text == "Publication Type":
+                    type_filter = f
+
             # tests which type of search has been done and sets the correct one
             if k == 1:  # results from the last five years
-                driver.find_element_by_xpath(
-                    "//button[@class='cl-button cl-button--no-arrow-divider cl-button--not-icon-only cl-button--no-icon cl-button--has-label cl-button--icon-pos-left cl-button--shape-rectangle cl-button--size-default cl-button--type-default cl-dropdown-button cl-dropdown dropdown-filters__dates']").click()
+                date_filter.click()
                 element = driver.find_element_by_xpath(
                     "//button[@data-selenium-selector='last-five-years-filter-button']")
                 driver.execute_script('arguments[0].click()', element)
                 driver.find_element_by_xpath(
-                    "//div[@class='flex-container flex-row-vcenter dropdown-filters__flex-container']").click()
+                    "//div[@class='flex-container flex-row-vcenter dropdown-filters__outer-flex-container']").click()
             elif k == 2:  # results with Reviews marked
-                driver.find_element_by_xpath(
-                    "//button[@class='cl-button cl-button--no-arrow-divider cl-button--not-icon-only cl-button--no-icon cl-button--has-label cl-button--icon-pos-left cl-button--shape-rectangle cl-button--size-default cl-button--type-default cl-dropdown-button cl-dropdown dropdown-filters__pub_type']").click()
+                type_filter.click()
                 driver.find_element_by_xpath("//*[contains(text(), 'Review (')]").click()
                 driver.find_element_by_xpath(
-                    "//div[@class='flex-container flex-row-vcenter dropdown-filters__flex-container']").click()
+                    "//div[@class='flex-container flex-row-vcenter dropdown-filters__outer-flex-container']").click()
             else:
                 pass
 
@@ -150,7 +158,7 @@ class Crawler:
                         break
 
                 # searches for the articles in the page and saves them in a list
-                list_articles_in_page = driver.find_elements_by_xpath("//article[@class='search-result']")
+                list_articles_in_page = driver.find_elements_by_xpath("//div[@class='cl-paper-row serp-papers__paper-row paper-row-normal']")
 
                 # iterates over each article in the articles list
                 for item in list_articles_in_page:
@@ -159,7 +167,7 @@ class Crawler:
 
                     # saves all authors with a html link to their pages in a list
                     list_authors_html_link = item.find_elements_by_xpath(
-                        ".//a[@class='author-list__link author-list__author-name']")
+                        ".//a[@class='cl-paper-authors__author-link']")
 
                     # saves all authors without a html link to their pages in a list
                     list_authors_without_html_link = None
@@ -217,7 +225,8 @@ class Crawler:
                     # saves the article date as a string
                     date = '0'
                     try:
-                        date = item.find_element_by_xpath(".//span[@data-heap-id='paper-year']").text
+                        full_date = item.find_element_by_xpath(".//span[@class='cl-paper-pubdates']").text
+                        date = full_date.split()[-1]
                     except:
                         pass
 
@@ -225,7 +234,7 @@ class Crawler:
                     citations = '0'
                     try:
                         citations = item.find_element_by_xpath(
-                            ".//li[@data-selenium-selector='search-result-total-citations']").text
+                            ".//div[@data-selenium-selector='total-citations-stat']").text
                         citations = citations.replace(',', '')
                         citations = citations.replace('.', '')
                     except:
@@ -234,8 +243,9 @@ class Crawler:
                     # saves the article html link as a string
                     link = '-'
                     try:
-                        link = item.find_element_by_xpath(".//a[@data-selenium-selector='paper-link']").get_attribute(
-                            'href')
+                        #article_actions = item.find_element_by_xpath(".//div[class='cl-paper-action__button-container'")
+                        link = item.find_element_by_xpath(".//a[@class='flex-row cl-paper-view-paper']")\
+                            .get_attribute('href')
                     except:
                         pass
 
@@ -264,9 +274,9 @@ class Crawler:
                     # saves the article synopsis as a string
                     synopsis = 'No synopsis'
                     try:
-                        item.find_element_by_xpath(".//span[@class='more mod-clickable']").click()
-                        element = item.find_element_by_xpath(".//span[@class='abstract full-abstract']")
-                        synopsis = element.text.replace(" Collapse", "")
+                        element = item.find_element_by_xpath(".//div[@class='tldr-abstract-replacement text-truncator']")
+                        synopsis = element.text.replace(" Expand", "")
+                        synopsis = synopsis.replace("TLDR\n", "")
                     except:
                         pass
 
@@ -286,7 +296,7 @@ class Crawler:
 
                 # tries to go to the next page, if exists
                 try:
-                    element = driver.find_element_by_xpath("//a[@data-selenium-selector='next-page']")
+                    element = driver.find_element_by_xpath("//div[@data-selenium-selector='next-page']")
                     driver.execute_script('arguments[0].click()', element)
                 except:
                     print("SUBJECT HAS NO MORE SEARCH PAGES!")

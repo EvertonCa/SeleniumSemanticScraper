@@ -9,5 +9,3 @@ lista_artigos = gerenciador.loadArtigos()
 
 leitor = ExcelExporter.ExcelExporter(search, True, os.getcwd())
 print('Done')
-
-

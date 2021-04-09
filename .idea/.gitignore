@@ -1,2 +1,7 @@
 # Default ignored files
 /workspace.xml
+/inspectionProfiles
+/misc.xml
+/modules.xml
+/SeleniumSemanticScraper.iml
+/vcs.xml

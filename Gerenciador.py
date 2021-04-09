@@ -60,4 +60,3 @@ class Gerenciador:
             self.inicializaArtigos()
         if caminho_autores.is_file() is False:
             self.inicializaAutores()
-
