@@ -115,7 +115,7 @@ class Crawler:
                 print("~~~~ PAGE DID NOT LOAD! ~~~~")
 
             # Check all the filters in menu
-            filters = driver.find_elements_by_xpath("//button[@class='cl-button cl-button--no-arrow-divider cl-button--not-icon-only cl-button--no-icon cl-button--has-label cl-button--icon-pos-left cl-button--shape-rectangle cl-button--size-default cl-button--type-default cl-button--density-default cl-dropdown-button']")
+            filters = driver.find_elements_by_xpath("//button[@class='cl-button cl-button--no-arrow-divider cl-button--not-icon-only cl-button--no-icon cl-button--has-label cl-button--font-size- cl-button--icon-pos-left cl-button--shape-rectangle cl-button--size-default cl-button--type-default cl-button--density-default cl-dropdown-button']")
             date_filter = None
             type_filter = None
             for f in filters:
