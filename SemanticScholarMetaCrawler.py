@@ -43,6 +43,8 @@ class Crawler:
         self.options.add_argument('--no-sandbox')
         self.options.add_argument('--disable-gpu')
 
+        #self.options.binary_location = "C:\\Path\\To\\Chrome"
+
         self.start_time = Timer.timeNow()
         self.end_time = Timer.timeNow()
 
@@ -128,7 +130,7 @@ class Crawler:
             if k == 1:  # results from the last five years
                 date_filter.click()
                 element = driver.find_element_by_xpath(
-                    "//button[@data-selenium-selector='last-five-years-filter-button']")
+                    "//button[@data-test-id='last-five-years-filter-button']")
                 driver.execute_script('arguments[0].click()', element)
                 driver.find_element_by_xpath(
                     "//div[@class='flex-container flex-row-vcenter dropdown-filters__outer-flex-container']").click()
@@ -163,7 +165,7 @@ class Crawler:
                 # iterates over each article in the articles list
                 for item in list_articles_in_page:
                     # saves the article title as a string
-                    title = item.find_element_by_xpath(".//a[@data-selenium-selector='title-link']").text
+                    title = item.find_element_by_xpath(".//a[@data-test-id='title-link']").text
 
                     # saves all authors with a html link to their pages in a list
                     list_authors_html_link = item.find_elements_by_xpath(
@@ -218,7 +220,7 @@ class Crawler:
                     # saves the article origin as a string
                     origin = '-'
                     try:
-                        origin = item.find_element_by_xpath(".//span[@data-selenium-selector='venue-metadata']").text
+                        origin = item.find_element_by_xpath(".//span[@data-test-id='venue-metadata']").text
                     except:
                         pass
 
@@ -234,7 +236,7 @@ class Crawler:
                     citations = '0'
                     try:
                         citations = item.find_element_by_xpath(
-                            ".//div[@data-selenium-selector='total-citations-stat']").text
+                            ".//div[@data-test-id='total-citations-stat']").text
                         citations = citations.replace(',', '')
                         citations = citations.replace('.', '')
                     except:
@@ -252,7 +254,7 @@ class Crawler:
                     cite = '-'
                     bibtex = '-'
                     try:
-                        item.find_element_by_xpath(".//button[@data-selenium-selector='cite-link']").click()
+                        item.find_element_by_xpath(".//button[@data-test-id='cite-link']").click()
                         try:
                             waitelement = WebDriverWait(driver, 20). \
                                 until(EC.presence_of_element_located(
@@ -295,7 +297,7 @@ class Crawler:
 
                 # tries to go to the next page, if exists
                 try:
-                    element = driver.find_element_by_xpath("//div[@data-selenium-selector='next-page']")
+                    element = driver.find_element_by_xpath("//div[@data-test-id='next-page']")
                     driver.execute_script('arguments[0].click()', element)
                 except:
                     print("SUBJECT HAS NO MORE SEARCH PAGES!")

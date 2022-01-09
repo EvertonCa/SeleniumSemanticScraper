@@ -72,3 +72,26 @@ Screen to choose the folder:
 ![Print](SupportImages/Folder_Picker.png)
 
 After this, your will be taken to the Save Screen. It works just like in the normal search.
+
+# Common errors
+
+## Cannot find Chrome binary
+
+This error occurs when the ChromeDriver cannot find the Chrome binary in the default location of your system.
+
+To override the default Chrome binary, do as follows: 
+
+* Open the ``SemanticScholarMetaCrawler.py`` file;
+* Uncomment line 46 and replace it with your Chrome path.
+
+```python
+43      self.options.add_argument('--no-sandbox')
+44      self.options.add_argument('--disable-gpu')
+45
+46      #self.options.binary_location = "C:\\Path\\To\\Chrome"
+47
+48      self.start_time = Timer.timeNow()
+49      self.end_time = Timer.timeNow()
+```
+
+More info [here](https://stackoverflow.com/questions/50138615/webdriverexception-unknown-error-cannot-find-chrome-binary-error-with-selenium).
