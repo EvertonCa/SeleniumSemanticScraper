@@ -135,25 +135,29 @@ class GUI:
         self.app.addLabel('spacing_label3', '')
         self.app.addButton('Merge Old Searches', self.press)
 
+    def external_folders(self, list_folder):
+        folders = list_folder.split("} {")
+
+        for text_folder in folders:
+            folder = text_folder.strip("{}")
+            self.app.addListItem("folders_list", folder)
+            self.folders_list.append(folder)
+
     def merge_searches(self):
         self.app.setStretch('both')
         self.app.setSticky('n')
         self.app.addLabel('Label_merge_searches',
-                          'Select the searches directories you would like to merge.', colspan=2)
+                          'Drag and drop directories you would like to merge.', colspan=2)
 
-        self.app.startScrollPane("folders_list", colspan=2)
-        self.app.setScrollPaneWidth("folders_list", 605)
-        self.app.setScrollPaneHeight("folders_list", 250)
+        self.app.addListBox("folders_list", colspan=2)
+        self.app.setListBoxDropTarget("folders_list", self.external_folders)
+        self.app.setListBoxWidth("folders_list", 50)
         self.app.setStretch('both')
         self.app.setSticky('nsew')
-        self.app.addMessage('folders_merge', '', colspan=2)
-        self.app.setMessageWidth('folders_merge', 600)
         self.app.setStretch('')
         self.app.setSticky('s')
-        self.app.stopScrollPane()
 
-        self.app.addButton('Select Folder', self.press, row=3, column=0)
-        self.app.addButton('Merge Searches', self.press, row=3, column=1)
+        self.app.addButton('Merge Searches', self.press, row=3)
 
     def main_page(self):
         self.menus()
@@ -240,12 +244,6 @@ class GUI:
 
         elif btn == 'Merge Old Searches':
             self.app.selectFrame('Pages', 5)
-
-        elif btn == 'Select Folder':
-            text = self.app.directoryBox('Select Folder')
-            self.folders_list.append(text)
-            self.folders_text += text + '\n'
-            self.app.setMessage('folders_merge', self.folders_text)
 
         elif btn == 'Merge Searches':
             self.single_or_merge = True
