@@ -62,14 +62,9 @@ the "Merge Old Searches" button.
 
 ![Print](SupportImages/Initial_Page2.png)
 
-First, click on the "Select Folder" button (1). Select the folder in which your search was 
-saved. Repeat this to add all the searches you'd like. Then press "Merge Searches" (2).
+First, drag and drop all previous searches you would like to merge. Then press "Merge Searches".
 
-![Print](SupportImages/Merge_Page.png)
-
-Screen to choose the folder:
-
-![Print](SupportImages/Folder_Picker.png)
+![Print](SupportImages/Merge_Page2.png)
 
 After this, your will be taken to the Save Screen. It works just like in the normal search.
 
