@@ -297,7 +297,7 @@ class Crawler:
 
                 # tries to go to the next page, if exists
                 try:
-                    element = driver.find_element_by_xpath("//div[@data-selenium-selector='next-page']")
+                    element = driver.find_element_by_xpath("//button[@data-selenium-selector='next-page']")
                     driver.execute_script('arguments[0].click()', element)
                 except:
                     print("SUBJECT HAS NO MORE SEARCH PAGES!")
@@ -323,8 +323,3 @@ class Crawler:
         excelExporter = ExcelExporter.ExcelExporter(self.input_search, self.gui.single_or_merge, self.root_directory)
         excelExporter.gui = self.gui
         excelExporter.order_type(parameter)
-
-
-
-
-
