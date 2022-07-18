@@ -83,7 +83,7 @@ To override the default Chrome binary, do as follows:
 43      self.options.add_argument('--no-sandbox')
 44      self.options.add_argument('--disable-gpu')
 45
-46      #self.options.binary_location = "C:\\Path\\To\\Chrome"
+46      #self.options.binary_location = "C:\\Path\\To\\Chrome\\chrome.exe"
 47
 48      self.start_time = Timer.timeNow()
 49      self.end_time = Timer.timeNow()
