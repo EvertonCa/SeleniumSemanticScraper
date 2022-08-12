@@ -42,6 +42,8 @@ class Crawler:
         self.options.add_argument('--headless')
         self.options.add_argument('--no-sandbox')
         self.options.add_argument('--disable-gpu')
+        self.options.add_argument('--ignore-certificate-errors')
+        self.options.add_argument('--ignore-ssl-errors')
 
         #self.options.binary_location = "C:\\Path\\To\\Chrome"
 
