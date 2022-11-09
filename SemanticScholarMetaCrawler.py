@@ -83,7 +83,7 @@ class Crawler:
         driver = webdriver.Chrome(self.directory_chromedriver, chrome_options=self.options)
 
         # runs the following code 3 times, one for each type os search
-        for k in range(0, 3):
+        for k in range(0, 2):
             # label gui
             self.gui.app.queueFunction(self.gui.app.setLabel, 'progress_bar_label', 'Crawling with '
                                        + str(k+1) + '/3 parameter...')
