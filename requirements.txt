@@ -1,5 +1,5 @@
 appJar==0.94.0
-certifi==2020.6.20
+certifi==2022.12.7
 chardet==3.0.4
 idna==2.10
 pdf2image==1.13.1
