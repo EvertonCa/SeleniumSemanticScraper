@@ -102,7 +102,7 @@ class Crawler:
             # dismiss the popup that asks to allow cookies, if it shows up
             try:
                 driver.find_element_by_xpath(
-                    "//div[@class='copyright-banner__dismiss-btn button button--secondary']").click()
+                    "//button[@class='copyright-banner__dismiss-btn button button--secondary']").click()
             except:
                 pass
 
