@@ -50,7 +50,7 @@ class ExcelExporter:
                 newer_date = int(article.data)
 
         for article in articles_list:
-            article.data_relativa = int(article.data) / newer_date
+            article.data_relativa = int(article.data) / (newer_date if newer_date > 0 else 1)
 
             # put a score based on number of citations
             if int(article.citacoes) > 100:
@@ -79,8 +79,8 @@ class ExcelExporter:
                 max_citations = int(article.citacoes)
 
         for article in articles_list:
-            article.data_relativa = int(article.data) / newer_date
-            article.citacoes_relativa = int(article.citacoes) / max_citations
+            article.data_relativa = int(article.data) / (newer_date if newer_date > 0 else 1)
+            article.citacoes_relativa = int(article.citacoes) / (max_citations if max_citations > 0 else 1)
 
         self.ordered_date_articles_list = articles_list
         self.ordered_citations_articles_list = articles_list
@@ -255,10 +255,10 @@ class ExcelExporter:
         synopsis = 11
         linha = 0
 
-        label_comment = 'Label NUMBER: 1 -> article\n' \
-                        'Label NUMBER: 2 -> conference, inproceedings, proceedings or phdthesis\n' \
-                        'Label NUMBER: 3 -> mastersthesis, book, inbook, Incollection or techreport\n' \
-                        'Label NUMBER: 4 -> manual, misc or unpublished'
+        label_comment = 'Label NUMBER: 1 -> Journal Article\n' \
+                        'Label NUMBER: 2 -> Conference, CaseReport\n' \
+                        'Label NUMBER: 3 -> Book, BookSection, News, Study\n' \
+                        'Label NUMBER: 4 -> Others'
 
         primeiraLinha_format = workbook.add_format({'bold': True,
                                                     'font_size': '16',
@@ -376,13 +376,11 @@ class ExcelExporter:
         self.gui.show_saved_alert(diretorio_excel)
 
     def article_label(self, artigo):
-        if artigo.cite == 'article':
-            article_label = '1'
-        elif artigo.cite == 'conference' or artigo.cite == 'inproceedings' or artigo.cite == 'proceedings' or \
-                artigo.cite == 'phdthesis':
+        if 'Conference' in artigo.cite or 'CaseReport' in artigo.cite:
             article_label = '2'
-        elif artigo.cite == 'mastersthesis' or artigo.cite == 'book' or artigo.cite == 'inbook' or \
-                artigo.cite == 'Incollection' or artigo.cite == 'techreport':
+        elif 'JournalArticle' in artigo.cite or 'Review' in artigo.cite:
+            article_label = '1'
+        elif 'Book' in artigo.cite or 'BookSection' in artigo.cite or 'News' in artigo.cite or 'Study' in artigo.cite:
             article_label = '3'
         else:
             article_label = '4'

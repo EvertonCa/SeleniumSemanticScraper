@@ -18,9 +18,7 @@ class PDFDownloader:
 
         os.chdir(os.path.join(self.root_directory, 'Results', self.search))
 
-        if os.path.exists(self.pdf_directory):
-            pass
-        else:
+        if not os.path.exists(self.pdf_directory):
             os.mkdir('PDFs')
 
         os.chdir(self.root_directory)
@@ -55,8 +53,6 @@ class PDFDownloader:
             if 'pdf' in link:
                 self.download_file(link, name)
                 self.downloaded_files_quant += 1
-            else:
-                pass
 
         end_time = Timer.timeNow()
         self.gui.show_download_done_alert(Timer.totalTime(start_time, end_time), str(self.downloaded_files_quant))

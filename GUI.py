@@ -57,9 +57,9 @@ class GUI:
         self.app.addLabel('Label_Search', 'Enter your search phrase:', row=0)
         self.app.addEntry('Entry_Search', row=1)
         self.app.addLabel('label_space', '', row=2)
-        self.app.addLabel('Label_Pages_Quantity', 'Select how many pages would you like to search:', row=3)
+        self.app.addLabel('Label_Pages_Quantity', 'Select how many articles you would like to search:', row=3)
         self.app.addScale('Quantity_scale', row=4)
-        self.app.setScaleRange('Quantity_scale', 0, 50, 5)
+        self.app.setScaleRange('Quantity_scale', 0, 100, 10)
         self.app.showScaleIntervals('Quantity_scale', 5)
         self.app.showScaleValue('Quantity_scale', True)
         self.app.setStretch('both')
@@ -67,6 +67,8 @@ class GUI:
         self.app.addNamedButton('Next', 'Next1', self.press)
 
     def show_search_done_alert(self, time, quantity):
+        self.app.stopAnimation('loading')
+        self.app.hideImage('loading')
         self.app.infoBox('DONE', 'Search Completed in ' + str(time.seconds) + ' second(s) with ' +
                          quantity + ' articles successfully gathered.')
         self.app.setButtonState('Next2', 'normal')
@@ -88,11 +90,17 @@ class GUI:
         self.app.addLabel('progress_bar_label', 'Press "Start Search!"')
         self.app.setStretch('both')
         self.app.setSticky('nswe')
-        self.app.addMeter('progress_bar', column=0, row=1)
-        self.app.setMeterFill('progress_bar', 'blue')
+        
         self.app.setSticky('')
+
         self.app.addButton('Start Search!', self.press, column=0, row=2)
         self.app.setStretch('both')
+
+        self.app.addImage("loading", "Images/book.gif")
+        self.app.setAnimationSpeed("loading", 100)
+        self.app.stopAnimation("loading")
+        self.app.hideImage('loading')
+
         self.app.setSticky('se')
         self.app.addNamedButton('Next', 'Next2', self.press)
         self.app.setButtonState('Next2', 'disabled')
@@ -176,9 +184,9 @@ class GUI:
         self.progress_bar()
         self.app.stopFrame()
 
-        self.app.startFrame('Downloading Progress')
-        self.progress_bar2()
-        self.app.stopFrame()
+        #self.app.startFrame('Downloading Progress')
+        #self.progress_bar2()
+        #self.app.stopFrame()
 
         self.app.startFrame('Saving Options')
         self.save_menu()
@@ -215,7 +223,7 @@ class GUI:
             self.search_phrase = self.app.getEntry('Entry_Search')
             self.input_pages = self.app.getScale('Quantity_scale')
             if self.input_pages == 0:
-                self.app.errorBox('Error!', 'Selecting 0 pages will end up with a empty search!')
+                self.app.errorBox('Error!', 'Selecting 0 articles will end up with a empty search!')
             else:
                 self.app.nextFrame("Pages")
 
@@ -228,6 +236,8 @@ class GUI:
         elif btn == "Start Search!":
             self.app.setLabel('progress_bar_label', 'Getting Ready...')
             self.app.setButtonState('Start Search!', 'disabled')
+            self.app.showImage('loading')
+            self.app.startAnimation('loading')
             self.app.thread(self.create_crawler)
 
         elif btn == "Start Downloads!":
@@ -243,12 +253,12 @@ class GUI:
             self.app.selectFrame('Pages', 1)
 
         elif btn == 'Merge Old Searches':
-            self.app.selectFrame('Pages', 5)
+            self.app.selectFrame('Pages', 4)
 
         elif btn == 'Merge Searches':
             self.single_or_merge = True
             self.merger = Merger(self.folders_list)
-            self.app.selectFrame('Pages', 4)
+            self.app.selectFrame('Pages', 3)
 
         elif btn == 'Close':
             self.app.destroySubWindow('About')

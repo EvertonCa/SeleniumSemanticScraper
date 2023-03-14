@@ -42,21 +42,17 @@ class Gerenciador:
             pickle.dump(lista_artigos, file_output, -1)
 
     def inicializaPrograma(self, palavraChave):
-        if os.path.exists(self.diretorio_files):
-            pass
-        else:
+        if not os.path.exists(self.diretorio_files):
             os.mkdir('Results')
         diretorio_com_palavra_chave = os.path.join(self.diretorio_files, palavraChave)
-        if os.path.exists(diretorio_com_palavra_chave):
-            pass
-        else:
+        if not os.path.exists(diretorio_com_palavra_chave):
             os.chdir(self.diretorio_files)
             os.mkdir(palavraChave)
         self.arquivo_autores = os.path.join(diretorio_com_palavra_chave, 'Authors.pkl')
         self.arquivo_artigos = os.path.join(diretorio_com_palavra_chave, 'Articles.pkl')
         caminho_autores = Path(self.arquivo_autores)
         caminho_artigos = Path(self.arquivo_artigos)
-        if caminho_artigos.is_file() is False:
+        if not caminho_artigos.is_file():
             self.inicializaArtigos()
-        if caminho_autores.is_file() is False:
+        if not caminho_autores.is_file():
             self.inicializaAutores()
