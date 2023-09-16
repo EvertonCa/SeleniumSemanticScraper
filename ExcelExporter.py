@@ -61,7 +61,7 @@ class ExcelExporter:
                 article.citacoes_relativa = 0
 
 
-            qualis_dict = {'A1': 1, 'A2': 2, 'A3': 3, 'A4': 4, 'B1': 5, 'B2': 6, 'B3': 7, 'B4': 8, 'B5': 9, 'C': 10, 'NF': 10}
+            qualis_dict = {'A1': 1, 'A2': 2, 'A3': 3, 'A4': 4, 'B1': 5, 'B2': 6, 'B3': 7, 'B4': 8, 'B5': 9, 'C': 10, 'NF': 10, 'NP': 10}
             qualis_score = (10 - qualis_dict[article.qualis])/9
             
             # put a score based on article's type
