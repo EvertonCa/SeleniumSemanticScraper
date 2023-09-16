@@ -1,0 +1,31 @@
+<mxfile host="app.diagrams.net" modified="2023-09-16T01:07:30.270Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36" etag="Jk2gEMymzP_yy_1TCuQs" version="21.7.1" type="device">
+  <diagram name="Página-1" id="cWr7Fx6szr9G4M2YoG_c">
+    <mxGraphModel dx="607" dy="335" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="1" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Vd6yL369W3R3IuDgFUaj-4" value="$$0.2 \times \left ( \frac{\text{Article Date}}{\text{Newest Date}} \right ) +0.3\times&lt;br&gt;\text{Citation Factor} +0.5\times&lt;br&gt;\left ( \frac{10 - \text{Article Qualis}}{9} \right ) \leq 1$$" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="120" y="440" width="570" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Vd6yL369W3R3IuDgFUaj-5" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="393" y="480" as="sourcePoint" />
+            <mxPoint x="393" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Vd6yL369W3R3IuDgFUaj-6" value="$$\text{Number of Citations (NC)}$$&lt;br&gt;&lt;br&gt;$$0 \leq NC &amp;lt; 20 = 0$$&lt;br&gt;$$20 \leq NC &amp;lt; 100 = 0.5$$&lt;br&gt;$$NC \geq 100 = 1$$" style="text;html=1;strokeColor=default;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="288" y="524" width="210" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="Vd6yL369W3R3IuDgFUaj-7" value="$$\text{Qualis Score}$$&lt;br&gt;&lt;br&gt;$$A1 \rightarrow &lt;br&gt;1$$&lt;br&gt;$$A2 \rightarrow 2$$&lt;br&gt;$$\vdots$$&lt;br&gt;$$C \rightarrow 10$$" style="text;html=1;strokeColor=default;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="519" y="280" width="105" height="116" as="geometry" />
+        </mxCell>
+        <mxCell id="Vd6yL369W3R3IuDgFUaj-10" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="570" y="400" as="sourcePoint" />
+            <mxPoint x="571" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -60,11 +60,15 @@ class ExcelExporter:
             else:
                 article.citacoes_relativa = 0
 
-            # put a score based on article's type
-            label = float(self.article_label(article))
-            article.cite_label = (4 - label)/3
 
-            article.total_factor = article.data_relativa + article.citacoes_relativa + article.cite_label
+            qualis_dict = {'A1': 1, 'A2': 2, 'A3': 3, 'A4': 4, 'B1': 5, 'B2': 6, 'B3': 7, 'B4': 8, 'B5': 9, 'C': 10, 'NF': 10}
+            qualis_score = (10 - qualis_dict[article.qualis])/9
+            
+            # put a score based on article's type
+            #label = float(self.article_label(article))
+            #article.cite_label = (4 - label)/3
+
+            article.total_factor = 0.2*article.data_relativa + 0.3*article.citacoes_relativa + 0.5*qualis_score
 
         self.ordered_optimized_list = articles_list
         self.ordered_optimized_list.sort(key=lambda model: model.total_factor, reverse=True)
@@ -102,23 +106,24 @@ class ExcelExporter:
         worksheet_autores = workbook.add_worksheet('AUTHORS')
 
         indice = 0
-        type = 1
-        titulo = 2
-        autores = 3
-        publicado = 4
-        data = 5
-        citacoes = 6
+        #type = 1
+        titulo = 1
+        autores = 2
+        publicado = 3
+        data = 4
+        citacoes = 5
+        qualis = 6
         optimized = 7
-        impact = 8
-        link = 9
-        bibtex = 10
-        synopsis = 11
+        link = 8
+        bibtex = 9
+        synopsis = 10
         linha = 0
 
-        label_comment = 'Label NUMBER: 1 -> article\n' \
+        """label_comment = 'Label NUMBER: 1 -> article\n' \
                         'Label NUMBER: 2 -> conference, inproceedings, proceedings or phdthesis\n' \
                         'Label NUMBER: 3 -> mastersthesis, book, inbook, Incollection or techreport\n' \
                         'Label NUMBER: 4 -> manual, misc or unpublished'
+        """
 
         primeiraLinha_format = workbook.add_format({'bold': True,
                                                     'font_size': '16',
@@ -145,17 +150,17 @@ class ExcelExporter:
         })
 
         worksheet_artigos.write(linha, indice, 'Index', primeiraLinha_format)
-        worksheet_artigos.write(linha, type, 'Article Type', primeiraLinha_format)
-        worksheet_artigos.write_comment(linha, type, label_comment)
+        #worksheet_artigos.write(linha, type, 'Article Type', primeiraLinha_format)
+        #worksheet_artigos.write_comment(linha, type, label_comment)
         worksheet_artigos.write(linha, titulo, 'Title', primeiraLinha_format)
         worksheet_artigos.write(linha, autores, 'Authors', primeiraLinha_format)
         worksheet_artigos.write(linha, publicado, 'Publication Source', primeiraLinha_format)
         worksheet_artigos.write(linha, data, 'Publication Year', primeiraLinha_format)
         worksheet_artigos.write(linha, citacoes, 'Citations', primeiraLinha_format)
+        worksheet_artigos.write(linha, qualis, 'Qualis Score', primeiraLinha_format)
+        worksheet_artigos.write(linha, optimized, 'Importance Rate', primeiraLinha_format)
         worksheet_artigos.write(linha, link, 'Article Link', primeiraLinha_format)
         worksheet_artigos.write(linha, bibtex, 'BibTex', primeiraLinha_format)
-        worksheet_artigos.write(linha, optimized, 'Importance Rate', primeiraLinha_format)
-        worksheet_artigos.write(linha, impact, 'Impact Factor', primeiraLinha_format)
         worksheet_artigos.write(linha, synopsis, 'Synopsis', primeiraLinha_format)
         linha += 1
 
@@ -177,15 +182,15 @@ class ExcelExporter:
             primeiraLinha = linha
             worksheet_artigos.write(linha, indice, str(numeroDoArtigo), one_line_format)
 
-            articleLabel = self.article_label(artigo)
+            #articleLabel = self.article_label(artigo)
 
-            worksheet_artigos.write(linha, type, articleLabel, one_line_format)
+            #worksheet_artigos.write(linha, type, articleLabel, one_line_format)
             worksheet_artigos.write(linha, titulo, artigo.titulo, one_line_format)
             worksheet_artigos.write(linha, publicado, artigo.publicado_em, one_line_format)
             worksheet_artigos.write(linha, data, artigo.data, one_line_format)
             worksheet_artigos.write(linha, citacoes, artigo.citacoes, one_line_format)
+            worksheet_artigos.write(linha, qualis, artigo.qualis, one_line_format)
             worksheet_artigos.write(linha, optimized, artigo.total_factor, one_line_format)
-            worksheet_artigos.write(linha, impact, artigo.impact_factor, one_line_format)
             worksheet_artigos.write(linha, link, artigo.link, one_line_format)
             worksheet_artigos.write(linha, bibtex, artigo.bibtex, one_line_format)
             worksheet_artigos.write(linha, synopsis, artigo.synopsis, one_line_format)
@@ -242,23 +247,24 @@ class ExcelExporter:
         worksheet_autores = workbook.add_worksheet('AUTHORS')
 
         indice = 0
-        type = 1
-        titulo = 2
-        autores = 3
-        publicado = 4
-        data = 5
-        citacoes = 6
+        #type = 1
+        titulo = 1
+        autores = 2
+        publicado = 3
+        data = 4
+        citacoes = 5
+        qualis = 6
         optimized = 7
-        impact = 8
-        link = 9
-        bibtex = 10
-        synopsis = 11
+        link = 8
+        bibtex = 9
+        synopsis = 10
         linha = 0
 
-        label_comment = 'Label NUMBER: 1 -> Journal Article\n' \
+        """label_comment = 'Label NUMBER: 1 -> Journal Article\n' \
                         'Label NUMBER: 2 -> Conference, CaseReport\n' \
                         'Label NUMBER: 3 -> Book, BookSection, News, Study\n' \
                         'Label NUMBER: 4 -> Others'
+        """
 
         primeiraLinha_format = workbook.add_format({'bold': True,
                                                     'font_size': '16',
@@ -285,17 +291,17 @@ class ExcelExporter:
         })
 
         worksheet_artigos.write(linha, indice, 'Index', primeiraLinha_format)
-        worksheet_artigos.write(linha, type, 'Article Type', primeiraLinha_format)
-        worksheet_artigos.write_comment(linha, type, label_comment)
+        #worksheet_artigos.write(linha, type, 'Article Type', primeiraLinha_format)
+        #worksheet_artigos.write_comment(linha, type, label_comment)
         worksheet_artigos.write(linha, titulo, 'Title', primeiraLinha_format)
         worksheet_artigos.write(linha, autores, 'Authors', primeiraLinha_format)
         worksheet_artigos.write(linha, publicado, 'Publication Source', primeiraLinha_format)
         worksheet_artigos.write(linha, data, 'Publication Year', primeiraLinha_format)
         worksheet_artigos.write(linha, citacoes, 'Citations', primeiraLinha_format)
+        worksheet_artigos.write(linha, qualis, 'Qualis Score', primeiraLinha_format)
+        worksheet_artigos.write(linha, optimized, 'Importance Rate', primeiraLinha_format)
         worksheet_artigos.write(linha, link, 'Article Link', primeiraLinha_format)
         worksheet_artigos.write(linha, bibtex, 'BibTex', primeiraLinha_format)
-        worksheet_artigos.write(linha, optimized, 'Importance Rate', primeiraLinha_format)
-        worksheet_artigos.write(linha, impact, 'Impact Factor', primeiraLinha_format)
         worksheet_artigos.write(linha, synopsis, 'Synopsis', primeiraLinha_format)
         linha += 1
 
@@ -321,15 +327,15 @@ class ExcelExporter:
             primeiraLinha = linha
             worksheet_artigos.write(linha, indice, str(numeroDoArtigo), one_line_format)
 
-            articleLabel = self.article_label(artigo)
+            #articleLabel = self.article_label(artigo)
 
-            worksheet_artigos.write(linha, type, articleLabel, one_line_format)
+            #worksheet_artigos.write(linha, type, articleLabel, one_line_format)
             worksheet_artigos.write(linha, titulo, artigo.titulo, one_line_format)
             worksheet_artigos.write(linha, publicado, artigo.publicado_em, one_line_format)
             worksheet_artigos.write(linha, data, artigo.data, one_line_format)
             worksheet_artigos.write(linha, citacoes, artigo.citacoes, one_line_format)
+            worksheet_artigos.write(linha, qualis, artigo.qualis, one_line_format)
             worksheet_artigos.write(linha, optimized, artigo.total_factor, one_line_format)
-            worksheet_artigos.write(linha, impact, artigo.impact_factor, one_line_format)
             worksheet_artigos.write(linha, link, artigo.link, one_line_format)
             worksheet_artigos.write(linha, bibtex, artigo.bibtex, one_line_format)
             worksheet_artigos.write(linha, synopsis, artigo.synopsis, one_line_format)

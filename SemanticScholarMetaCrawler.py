@@ -10,7 +10,7 @@ from Autor import Autor
 from ExcelExporter import ExcelExporter
 from Gerenciador import Gerenciador
 import Timer
-
+from findQualis import find_similar_journal
 
 class Crawler:
     def __init__(self, root_directory):
@@ -193,9 +193,11 @@ class Crawler:
                         synopsis = _abstract.replace(" Expand", "") if _abstract else "No synopsis"
                         synopsis = synopsis.replace("TLDR\n", "")
 
+                        qualis_score = find_similar_journal(target_text=origin)
+
                         # creates a new instance of a Article object
                         new_article = Artigo(title, list_authors_in_article, origin, date,
-                                                    citationCount, link, cite, bibtex, synopsis)
+                                                    citationCount, link, cite, bibtex, synopsis, qualis_score)
 
                         # adds new article to set list (set list does not allow duplicates)
                         before = len(self.list_articles)

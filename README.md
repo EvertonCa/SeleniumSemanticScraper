@@ -54,7 +54,7 @@ After selecting your option, press "Save!" and you will be shown a pop up tellin
 
 If you choose the first option, your search will be saved using the equation below.
 
-![Print](SupportImages/Algorithm_Page.png)
+![Print](SupportImages/Crawler_Equation.png)
 
 # Multiple Searches
 If you'd like to merge multiple searches, generating only one ordered Excel File, you can choose
